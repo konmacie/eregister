@@ -13,14 +13,14 @@
                     <i class="bi bi-house-door"></i>Dashboard
                 </a>
             </li>
-            {% if perms.accounts.view_student %}
+            {% if perms.records.view_student %}
             <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{% url 'student:list' %}" class="nav-link">
                     <i class="bi bi-person"></i>Students
                 </a>
             </li>
             {% endif %}
-            {% if perms.accounts.view_studentgroup %}
+            {% if perms.records.view_studentgroup %}
             <li class="nav-item">
                 <a href="" class="nav-link">
                     <i class="bi bi-people"></i>Groups

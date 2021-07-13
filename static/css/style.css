@@ -11,13 +11,23 @@ body {
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
+#header-container nav .nav-link:hover {
+  background-color: rgb(200, 200, 200);
+}
+
+#header-container nav .nav-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #header-container nav .nav-link i {
-  padding: 0 0.5rem;
-  font-size: 0.9rem;
+  padding-right: 0.5rem;
+  font-size: 0.8rem;
 }
 
 #header-container nav .active {
-  border-bottom: 5px solid red !important;
+  border-bottom: 3px solid red !important;
 }
 
 #header,

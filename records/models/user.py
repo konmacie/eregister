@@ -88,8 +88,11 @@ class User(AbstractUser):
         qs = self.assignments.filter(
             date_start__lte=today,
             date_end__gte=today,
-        )
-        return qs.first()
+        ).select_related('group')
+        assign = qs.first()
+        if assign:
+            return assign.group
+        return None
 
     def clean(self) -> None:
         """
@@ -108,8 +111,7 @@ class User(AbstractUser):
             )
 
     def get_absolute_url(self):
-        """TODO:"""
-        pass
+        return reverse("student:detail", kwargs={"pk": self.pk})
 
     def __str__(self) -> str:
         """Return full name instead of username"""

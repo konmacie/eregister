@@ -1,0 +1,172 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+    {{ student }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ student }}
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link active" aria-current="page" href="#">Information</a>
+    <a class="nav-link" href="#">Groups</a>
+    <a class="nav-link" href="#">Marks</a>
+    <a class="nav-link" href="#">Attendance</a>
+    {% if perms.records.change_student %}
+        <a href="" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
+{% endblock header_nav %}
+
+{% block content %}
+<div class="row gx-3">
+    <div class="col-xl-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                Personal information
+            </div>
+            <div class="card-body px-1 px-md-3">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="w-50">
+                            <p class="fw-light m-0">First name</p>
+                            <p class="m-0">{{ student.first_name }}</p>
+                            
+                        </td>
+                        <td class="w-50">
+                            <p class="fw-light m-0">Last name</p>
+                            <p class="m-0">{{ student.last_name }}</p>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <p class="fw-light m-0">Birth date</p>
+                            <p class="m-0">{{ student.birth_date|default_if_none:"" }}&nbsp;</p>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <p class="fw-light m-0">Address</p>
+                            <p class="m-0">{{ student.address|default_if_none:"" }}&nbsp;</p>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-50">
+                            <p class="fw-light m-0">ZIP Code</p>
+                            <p class="m-0">{{ student.zip_code|default_if_none:"" }}&nbsp;</p>
+                            
+                        </td>
+                        <td class="w-50">
+                            <p class="fw-light m-0">City</p>
+                            <p class="m-0">{{ student.city|default_if_none:"" }}&nbsp;</p>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-1">
+                            <hr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <p class="fw-light m-0">Current group</p>
+                            <p class="m-0">
+                                {% if student_group %}
+                                <a href="" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> {{ student_group }}&nbsp;
+                                </a>
+                                {% else %}
+                                    Currently not assigned to any group.
+                                {% endif %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-xl-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                Contact
+            </div>
+            <div class="card-body px-1 px-md-3">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="w-100">
+                            <p class="fw-light m-0">Phone number</p>
+                            <p class="m-0">{{ student.phone|default_if_none:"" }}&nbsp;</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p class="fw-light m-0">Email</p>
+                            <p class="m-0">{{ student.email|default_if_none:"" }}&nbsp;</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        
+        <div id="accountCard" class="card bg-light mb-3">
+            <div class="card-header">
+                Account
+            </div>
+            <div class="card-body px-1 px-md-3">
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">
+                            <p class="fw-light m-0">Username</p>
+                            <p class="m-0">{{ student.username }}</p>
+                        </td>
+                    </tr>
+                    {% if perms.records.reset_student_password %}
+                    <tr>
+                        <td class="w-50">
+                            <p class="fw-light m-0">Password</p>
+                            <p class="m-0">
+                                {% if password %}
+                                    {{ password }}
+                                {% else %}
+                                *****
+                                {% endif %}
+                            </p>
+                        </td>
+                        <td class="w-50 align-bottom text-end">
+                            <form action="#accountCard" method="post">{% csrf_token %}
+                                <button type="submit" name="generate_password" value="1" class="btn btn-outline-danger">Reset<span class="d-none d-sm-inline"> password</span></button>
+                                <a class="btn btn-outline-primary" href="#passwordHelp" data-bs-toggle="offcanvas" role="button" aria-controls="passwordHelp">
+                                    <i class="bi bi-question-lg"></i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="passwordHelp" aria-labelledby="passwordHelpLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="passwordHelpLabel">Password generation</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="mb-3">
+            Generate new password for the student.
+        </div>
+        <div>
+            Raw passwords are not stored, so newly generated one will be shown <strong>only once</strong>.
+        </div>
+    </div>
+</div>
+{% endblock content %}

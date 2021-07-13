@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Students | eRegister
+{% endblock title %}
+
+{% block header %}
+    Students
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link active" aria-current="page" href="#">All students</a>
+    {% if perms.records.add_student %}
+        <a href="" class="nav-link"><i class="bi bi-plus-lg"></i>New</a>
+    {% endif %}
+{% endblock header_nav %}
+
+
+{% block content %}
+{% include 'includes/pagination.html' %}
+<div class="card bg-light my-3">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Last name</th>
+                        <th scope="col">First name</th>
+                        <th scope="col">Group</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="align-middle">
+                        <th scope="row">
+                            <a href="{{ student.get_absolute_url }}" class="text-decoration-none">{{ student.last_name }}</a>
+                        </th>
+                        <td>{{ student.first_name }}</td>
+                        <td>{{ student.student_group|default_if_none:"" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% include 'includes/pagination.html' %}
+{% endblock content %}
