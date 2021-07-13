@@ -1,0 +1,148 @@
+html,
+body {
+  height: 100%;
+  font-size: 1rem;
+}
+
+#header-container {
+  /* border-bottom: 1px solid gray !important; */
+  background-color: #eee;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+#header-container nav .nav-link i {
+  padding: 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+#header-container nav .active {
+  border-bottom: 5px solid red !important;
+}
+
+#header,
+main {
+  max-width: 1620px;
+}
+
+#header-brand-container {
+  /* background: rgb(200, 200, 200); */
+  background: rgba(33, 37, 41, 1);
+  /* background: linear-gradient(
+    0deg,
+    rgba(33, 37, 41, 1) 0%,
+    rgba(238, 238, 238, 1) 100%
+  ); */
+  /* background: linear-gradient(
+    0deg,
+    rgba(33, 37, 41, 1) 0%,
+    rgba(101, 103, 106, 1) 60%,
+    rgba(238, 238, 238, 1) 100%
+  ); */
+}
+
+.header-brand {
+  /* color: rgba(33, 37, 41, 1); */
+  color: #eee;
+  text-decoration: none;
+}
+
+.header-brand:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.navbar-brand-small {
+  display: none;
+}
+
+.navbar-brand i {
+  font-size: 1.6rem;
+  padding-right: 10px;
+}
+
+.nav-item i {
+  padding-right: 10px;
+}
+
+.header-button {
+  padding-right: 10px;
+}
+
+#sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#sidebar hr {
+  width: 90%;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#sidebar .nav-link {
+  font-weight: 500;
+  color: #ddd;
+  font-size: 1.1rem;
+}
+
+#sidebar .nav-link:hover {
+  font-weight: 600;
+  background-color: rgb(60, 60, 60);
+}
+
+.menu-collapse .nav-link {
+  font-size: 1rem;
+  font-weight: 400;
+  padding-left: 50px;
+}
+
+.select2-selection--multiple {
+  /* min-height: 50px !important; */
+  padding-bottom: 30px !important;
+  font-size: 1.1rem !important;
+}
+
+.select2-selection--multiple li {
+  display: block !important;
+}
+
+@media (max-width: 767.98px) {
+  .navbar-brand-small {
+    display: inline;
+    color: #eee;
+    font-size: 1.6rem !important;
+  }
+
+  #header-brand-container {
+    display: none;
+  }
+
+  #header-container {
+    padding-top: 60px;
+  }
+
+  #sidebar {
+    position: fixed;
+    height: auto !important;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    bottom: auto;
+    padding: 5px 0 5px; /* Height of navbar */
+    max-width: 100%;
+  }
+
+  #sidebar hr {
+    width: 90vw;
+    margin-left: 5vw;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .navbar-brand i {
+    font-size: 1.2rem !important;
+    padding-right: 5px;
+  }
+}

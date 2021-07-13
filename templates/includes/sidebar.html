@@ -1,0 +1,52 @@
+<div id="sidebar" class="col-md-4 col-lg-3 bg-dark text-white h-100 px-0 pt-2 pt-md-3">
+    <a class="h2 header-brand navbar-brand-small" href="">
+        <i class="bi bi-book mx-3"></i>eRegister
+    </a>
+    <button class="navbar-toggler d-md-none collapsed float-end me-3 pt-0" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list" style="color: aliceblue; padding-left: 10px; font-size: 2rem"></i>
+    </button>
+    <nav id="sidebarMenu" class="navbar navbar-dark collapse d-md-block">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="{% url 'dashboard' %}" class="nav-link">
+                    <i class="bi bi-house-door"></i>Dashboard
+                </a>
+            </li>
+            {% if perms.accounts.view_student %}
+            <li class="nav-item">
+                <a href="" class="nav-link">
+                    <i class="bi bi-person"></i>Students
+                </a>
+            </li>
+            {% endif %}
+            {% if perms.accounts.view_studentgroup %}
+            <li class="nav-item">
+                <a href="" class="nav-link">
+                    <i class="bi bi-people"></i>Groups
+                </a>
+            </li>
+            {% endif %}
+            <hr />
+            {% if request.user.is_staff  %}
+            <li class="nav-item">
+                <a href="{% url 'admin:index' %}" class="nav-link" target="_blank">
+                    <i class="bi bi-tools"></i>Administration
+                </a>
+            </li>
+            <hr />
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#accountMenu"
+                    aria-controls="accountMenu" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i>{{ request.user }}
+                </a>
+                <div class="collapse menu-collapse" id="accountMenu">
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'auth:logout' %}" class="nav-link">Log out</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</div>
