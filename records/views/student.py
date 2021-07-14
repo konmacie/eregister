@@ -1,7 +1,9 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from records.forms.student import StudentCreateForm
 
 User = get_user_model()
@@ -71,7 +73,8 @@ class StudentDetailView(PermissionRequiredMixin, DetailView):
         return self.render_to_response(context)
 
 
-class StudentCreateView(PermissionRequiredMixin, CreateView):
+class StudentCreateView(PermissionRequiredMixin, SuccessMessageMixin,
+                        CreateView):
     """
     View to create new student account.
     Need 'records.add_student' permission to access.
@@ -79,6 +82,8 @@ class StudentCreateView(PermissionRequiredMixin, CreateView):
     permission_required = ['records.add_student']
     form_class = StudentCreateForm
     template_name = 'records/student/student_create.html'
+    success_message = _(
+        "Student %(last_name)s %(first_name)s added successfully")
 
     def get_success_url(self) -> str:
         """
