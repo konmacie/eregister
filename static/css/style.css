@@ -23,7 +23,6 @@ body {
 
 #header-container nav .nav-link i {
   padding-right: 0.5rem;
-  font-size: 0.8rem;
 }
 
 #header-container nav .active {
@@ -116,6 +115,28 @@ main {
 
 .select2-selection--multiple li {
   display: block !important;
+}
+
+.errorlist {
+  padding: 0;
+}
+
+.errorlist li {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  position: relative;
+  padding: 0.5rem 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  list-style: none;
+}
+
+.alert-danger {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
 }
 
 @media (max-width: 767.98px) {

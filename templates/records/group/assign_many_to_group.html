@@ -2,21 +2,21 @@
 {% load widget_tweaks %}
 
 {% block title %}
-    {{ group }} | eRegister
+    Assign to: {{ group }} | eRegister
 {% endblock title %}
 
 {% block header %}
-    {{ group }}
+    Assign to: {{ group }}
 {% endblock header %}
 
 {% block header_nav %}
     <a class="nav-link" href="{% url 'group:detail' group.pk %}">Information</a>
     <a class="nav-link" href="{% url 'group:assignments' group.pk %}">Assignments</a>
     {% if perms.records.add_studentgroupassignment %}
-        <a href="{% url 'group:assign-many' group.pk %}" class="nav-link"><i class="bi bi-person-plus"></i>Assign</a>
+        <a href="{% url 'group:assign-many' group.pk %}" class="nav-link active" aria-current="page"><i class="bi bi-person-plus"></i>Assign</a>
     {% endif %}
     {% if perms.records.change_studentgroup %}
-        <a href="{% url 'group:update' group.pk %}" class="nav-link active" aria-current="page"><i class="bi bi-pencil"></i>Edit</a>
+        <a href="{% url 'group:update' group.pk %}" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
     {% endif %}
 {% endblock header_nav %}
 
@@ -47,4 +47,24 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(function () {
+        $("#id_date_start").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-3:+3",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+        $("#id_date_end").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-3:+3",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+        $('#id_students_to_add').select2();
+    });
+</script>
 {% endblock content %}

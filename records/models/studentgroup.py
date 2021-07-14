@@ -93,6 +93,16 @@ class StudentGroupAssignment(models.Model):
         null=False
     )
 
+    def _get_colliding_assignments(self):
+        qs = StudentGroupAssignment.objects.filter(
+            student=self.student,
+            date_start__lte=self.date_end,
+            date_end__gte=self.date_start
+        ).select_related('student', 'group')
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        return qs
+
     def clean(self):
         super().clean()
 
@@ -103,6 +113,15 @@ class StudentGroupAssignment(models.Model):
                     "End date can't be earlier than start date."
                 )
             })
+        colliding_assignments = list(self._get_colliding_assignments())
+        if colliding_assignments:
+            raise ValidationError(
+                _("Colliding assigments for %(student)s: %(collisions)s"),
+                params={
+                    'student': str(self.student),
+                    'collisions': ", ".join(map(str, colliding_assignments)),
+                }
+            )
 
     def __str__(self):
         return "{} ({} - {})".format(

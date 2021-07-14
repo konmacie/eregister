@@ -11,6 +11,9 @@
 {% block header_nav %}
     <a class="nav-link active" aria-current="page" href="{% url 'group:detail' group.pk %}">Information</a>
     <a class="nav-link" href="{% url 'group:assignments' group.pk %}">Assignments</a>
+    {% if perms.records.add_studentgroupassignment %}
+        <a href="{% url 'group:assign-many' group.pk %}" class="nav-link"><i class="bi bi-person-plus"></i>Assign</a>
+    {% endif %}
     {% if perms.records.change_studentgroup %}
         <a href="{% url 'group:update' group.pk %}" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
     {% endif %}

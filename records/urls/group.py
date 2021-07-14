@@ -18,4 +18,7 @@ urlpatterns = [
     path('<pk>/update/',
          group_views.GroupUpdateView.as_view(),
          name='update'),
+    path('<pk>/assign-students/',
+         group_views.AssignManyToGroupView.as_view(),
+         name='assign-many'),
 ]

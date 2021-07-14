@@ -11,6 +11,9 @@
 {% block header_nav %}
     <a class="nav-link" href="{% url 'group:detail' group.pk %}">Information</a>
     <a class="nav-link active" aria-current="page" href="{% url 'group:assignments' group.pk %}">Assignments</a>
+    {% if perms.records.add_studentgroupassignment %}
+        <a href="{% url 'group:assign-many' group.pk %}" class="nav-link"><i class="bi bi-person-plus"></i>Assign</a>
+    {% endif %}
     {% if perms.records.change_studentgroup %}
         <a href="{% url 'group:update' group.pk %}" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
     {% endif %}
@@ -21,7 +24,7 @@
 <div class="card bg-light mb-3">
     <div class="card-header">Current assignments</div>
     <div class="card-body table-responsive">
-        <table class="table table-hover table-borderless">
+        <table class="table table-hover">
             <thead>
                 <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
                     <th class="col-md-1">#</th>
@@ -75,22 +78,28 @@
             </thead>
             {% regroup out_of_date_assignments by student as assigments %}
             {% for student in assigments %}
-                <tr style="border-bottom: 1px solid rgb(200, 200, 200);">
-                    <td>{{ forloop.counter }}</td>
-                    <td colspan="3">
-                        <a href="{{ student.grouper.get_absolute_url }}" class="text-decoration-none text-dark">
-                            {{ student.grouper.last_name }} <span class="fw-light">{{ student.grouper.first_name }}</span>
-                        </a>
-                    </td>
-                </tr>
                 {% for assignment in student.list %}
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td>{{ assignment.date_start }}</td>
-                        <td>{{ assignment.date_end }}</td>
+                        {% if forloop.first %}
+                            <td>{{ forloop.parentloop.counter }}</td>
+                            <td>
+                                <a href="{{ student.grouper.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ student.grouper.last_name }} <span class="fw-light">{{ student.grouper.first_name }}</span>
+                                </a>
+                            </td>
+                            <td>{{ assignment.date_start }}</td>
+                            <td>{{ assignment.date_end }}</td>
+                        {% else %}
+                            <td></td>
+                            <td></td>
+                            <td>{{ assignment.date_start }}</td>
+                            <td>{{ assignment.date_end }}</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
+                <tr>
+                    <td colspan="4" style="padding: 0; height: 1px !important; border-bottom: 1px solid rgb(220, 220, 220);"></td>
+                </tr>
             {% empty %}
             <tr>
                 <td colspan="4">
