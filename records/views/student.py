@@ -1,6 +1,8 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
+from records.forms.student import StudentCreateForm
 
 User = get_user_model()
 
@@ -43,9 +45,6 @@ class StudentDetailView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['student_group'] = self.object.student_group
-        context['assignments'] = self.object.assignments\
-            .order_by('date_start')\
-            .select_related('group')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -70,3 +69,22 @@ class StudentDetailView(PermissionRequiredMixin, DetailView):
             # add password to context so it could be shown in template
             context['password'] = password
         return self.render_to_response(context)
+
+
+class StudentCreateView(PermissionRequiredMixin, CreateView):
+    """
+    View to create new student account.
+    Need 'records.add_student' permission to access.
+    """
+    permission_required = ['records.add_student']
+    form_class = StudentCreateForm
+    template_name = 'records/student/student_create.html'
+
+    def get_success_url(self) -> str:
+        """
+        Depending on button clicked, redirect to student profile
+        or to creation form again.
+        """
+        if 'save_and_add_next' in self.request.POST:
+            return reverse_lazy('student:create')
+        return super().get_success_url()

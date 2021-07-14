@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class StudentCreationForm(forms.ModelForm):
+class StudentCreateForm(forms.ModelForm):
     """
     Form used to create new student.
     Account is created without password. It can be generated in right view.

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    New student | eRegister
+{% endblock title %}
+
+{% block header %}
+    New student
+{% endblock header %}
+
+{% block header_nav %}
+    <a href="{% url 'student:list' %}" class="nav-link">All students</a>
+    <a href="" class="nav-link active" aria-current="page" ><i class="bi bi-plus-lg"></i>New</a>
+{% endblock header_nav %}
+
+
+{% block content %}
+{% include 'includes/pagination.html' %}
+<div class="card bg-light mb-3">
+    <form method="post">{% csrf_token %}
+        <div class="card-body">
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <div class="row">
+                {% for field in form.visible_fields %}
+                    <div class="col-xl-6">
+                        <div class="row mb-3">
+                            <label for="{{ field.id_for_label }}" class="col-md-4 col-lg-4 col-form-label">{{ field.label }}</label>
+                            <div class="col-md-8 col-lg-8">
+                                {{ field|add_class:'form-control' }}
+                                <div class="form-text">
+                                    {{ field.help_text }}
+                                </div>
+                                {% for error in field.errors %}
+                                <span class="help-block">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="container-fluid text-end px-0">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+                <button type="submit" name="save_and_add_next" value="save_and_add_next" class="btn btn-outline-success">Save and add next</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $( function() {
+      $( "#id_birth_date" ).datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1950:-5",
+        defaultDate: "-5y",
+        dateFormat: "yy-mm-dd",
+        firstDay: 1
+      });
+    } );
+</script>
+{% include 'includes/pagination.html' %}
+{% endblock content %}
