@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {{ group }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ group }}
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link" href="{% url 'group:detail' group.pk %}">Information</a>
+    <a class="nav-link" href="{% url 'group:assignments' group.pk %}">Assignments</a>
+    {% if perms.records.change_studentgroup %}
+        <a href="{% url 'group:update' group.pk %}" class="nav-link active" aria-current="page"><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3"  style="max-width: 500px;">
+    <form method="post">{% csrf_token %}
+        <div class="card-body">
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ field.help_text }}
+                </div>
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endfor %}
+            
+            <div class="container-fluid text-end px-0 mt-3">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+                <a href="{{ object.get_absolute_url }}" class="btn btn-outline-danger">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

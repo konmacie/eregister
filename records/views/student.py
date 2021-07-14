@@ -4,6 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from django.contrib import messages
 from records.forms.student import StudentCreateForm
 
 User = get_user_model()
@@ -70,6 +71,8 @@ class StudentDetailView(PermissionRequiredMixin, DetailView):
             self.object.save()
             # add password to context so it could be shown in template
             context['password'] = password
+            # messages.success(self.request,
+            #                  _('Password reset was successful'))
         return self.render_to_response(context)
 
 
@@ -92,4 +95,33 @@ class StudentCreateView(PermissionRequiredMixin, SuccessMessageMixin,
         """
         if 'save_and_add_next' in self.request.POST:
             return reverse_lazy('student:create')
+        return super().get_success_url()
+
+
+class StudentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
+                        UpdateView):
+    """
+    View to edit student account.
+    Need 'records.change_student' permission to access.
+    """
+    permission_required = ['records.change_student']
+    model = User
+    form_class = StudentCreateForm
+    template_name = 'records/student/student_update.html'
+    context_object_name = 'student'
+    success_message = _("Student profile updated successfully")
+
+    def get_queryset(self):
+        """ Limit queryset to users without teacher status. """
+        qs = super().get_queryset()
+        return qs.filter(is_teacher=False)
+
+    def get_success_url(self) -> str:
+        """
+        Depending on button clicked, redirect to student profile
+        or to change form again.
+        """
+        if 'save_and_continue' in self.request.POST:
+            return reverse_lazy('student:update',
+                                kwargs={'pk': self.object.pk})
         return super().get_success_url()

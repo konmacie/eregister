@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ group }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ group }}
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link" href="{% url 'group:detail' group.pk %}">Information</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'group:assignments' group.pk %}">Assignments</a>
+    {% if perms.records.change_studentgroup %}
+        <a href="{% url 'group:update' group.pk %}" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3">
+    <div class="card-header">Current assignments</div>
+    <div class="card-body table-responsive">
+        <table class="table table-hover table-borderless">
+            <thead>
+                <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-5">Student</th>
+                    <th class="col-md-3">From</th>
+                    <th class="col-md-3">To</th>
+                </tr>
+            </thead>
+            {% for assignment in current_assignments %}
+            <tr>
+                <td>
+                    {{ forloop.counter }}.
+                </td>
+                <td>
+                    {% with assignment.student as student %}
+                        <a href="{{ student.get_absolute_url }}" class="text-decoration-none text-dark">
+                            {{ student.last_name }} <span class="fw-light">{{ student.first_name }}</span>
+                        </a>
+                    {% endwith %}
+                </td>
+                <td>
+                    {{ assignment.date_start }}
+                </td>
+                <td>
+                    {{ assignment.date_end }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">
+                    <div class="alert alert-warning mb-0">
+                        No current assignments found
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="card bg-light mb-3">
+    <div class="card-header">Out of date assignments</div>
+    <div class="card-body table-responsive">
+        <table class="table table-hover table-borderless table-sm">
+            <thead>
+                <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-5">Student</th>
+                    <th class="col-md-3">From</th>
+                    <th class="col-md-3">To</th>
+                </tr>
+            </thead>
+            {% regroup out_of_date_assignments by student as assigments %}
+            {% for student in assigments %}
+                <tr style="border-bottom: 1px solid rgb(200, 200, 200);">
+                    <td>{{ forloop.counter }}</td>
+                    <td colspan="3">
+                        <a href="{{ student.grouper.get_absolute_url }}" class="text-decoration-none text-dark">
+                            {{ student.grouper.last_name }} <span class="fw-light">{{ student.grouper.first_name }}</span>
+                        </a>
+                    </td>
+                </tr>
+                {% for assignment in student.list %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>{{ assignment.date_start }}</td>
+                        <td>{{ assignment.date_end }}</td>
+                    </tr>
+                {% endfor %}
+            {% empty %}
+            <tr>
+                <td colspan="4">
+                    <div class="alert alert-warning mt-1 mb-0">
+                        No out of date assignments found
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </table>
+    </div>
+</div>
+{% endblock content %}

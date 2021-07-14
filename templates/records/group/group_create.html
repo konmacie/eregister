@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    New group | eRegister
+{% endblock title %}
+
+{% block header %}
+    New group
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link" href="{% url 'group:list' %}">All groups</a>
+    {% if perms.records.add_studentgroup %}
+        <a href="{% url 'group:create' %}" class="nav-link active" aria-current="page"><i class="bi bi-plus-lg"></i>New</a>
+    {% endif %}
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3" style="max-width: 500px;">
+    <form method="post">{% csrf_token %}
+        <div class="card-body">
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ field.help_text }}
+                </div>
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endfor %}
+            
+            <div class="container-fluid text-end px-0 mt-3">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+                <button type="submit" name="save_and_add_next" value="save_and_add_next" class="btn btn-outline-success">Save and add next</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

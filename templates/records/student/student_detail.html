@@ -9,12 +9,12 @@
 {% endblock header %}
 
 {% block header_nav %}
-    <a class="nav-link active" aria-current="page" href="#">Information</a>
+    <a class="nav-link active" aria-current="page" href="{{ student.get_absolute_url }}">Information</a>
     <a class="nav-link" href="#">Groups</a>
     <a class="nav-link" href="#">Marks</a>
     <a class="nav-link" href="#">Attendance</a>
     {% if perms.records.change_student %}
-        <a href="" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
+        <a href="{% url 'student:update' student.pk %}" class="nav-link"><i class="bi bi-pencil"></i>Edit</a>
     {% endif %}
 {% endblock header_nav %}
 
@@ -72,16 +72,18 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <p class="fw-light m-0">Current group</p>
+                            <p class="fw-light m-0">Group</p>
+                            {% if student_group %}
                             <p class="m-0">
-                                {% if student_group %}
-                                <a href="" class="text-decoration-none">
+                                <a href="{{ student_group.get_absolute_url }}" class="text-decoration-none">
                                     <i class="bi bi-link-45deg"></i> {{ student_group }}&nbsp;
                                 </a>
-                                {% else %}
-                                    Currently not assigned to any group.
-                                {% endif %}
                             </p>
+                            {% else %}
+                                <div class="alert alert-secondary py-1 mb-0 mt-1">
+                                    Currently not assigned to any group.
+                                </div>    
+                            {% endif %}
                         </td>
                     </tr>
                 </table>
@@ -129,13 +131,16 @@
                     <tr>
                         <td class="w-50">
                             <p class="fw-light m-0">Password</p>
-                            <p class="m-0">
-                                {% if password %}
+                            {% if password %}
+                                <div class="alert alert-warning py-2 mb-0">
                                     {{ password }}
-                                {% else %}
+                                </div>
+                            {% else %}
+                            <p class="m-0">
                                 *****
-                                {% endif %}
                             </p>
+                            {% endif %}
+                            
                         </td>
                         <td class="w-50 align-bottom text-end">
                             <form action="#accountCard" method="post">{% csrf_token %}

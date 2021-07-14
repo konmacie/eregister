@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.conf import settings
 from datetime import date
 
@@ -35,24 +35,22 @@ class StudentGroup(models.Model):
         related_name='educated_group'
     )
 
-    def get_students_by_date(self, date):
+    def get_assignments_by_date(self, date):
         qs = self.assignments.filter(
             date_start__lte=date,
             date_end__gte=date,
         ).select_related('student')
         return qs
 
-    def get_all_student(self):
+    def get_all_assignments(self):
         qs = self.assignments.select_related('student')
         return qs
 
-    @property
-    def students(self):
-        return self.get_students_by_date(date.today())
+    def get_current_assignments(self):
+        return self.get_assignments_by_date(date.today())
 
     def get_absolute_url(self):
-        """TODO"""
-        pass
+        return reverse_lazy('group:detail', kwargs={'pk': self.pk})
 
     def __str__(self) -> str:
         return str(self.name)

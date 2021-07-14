@@ -12,4 +12,7 @@ urlpatterns = [
     path('<pk>/',
          student_views.StudentDetailView.as_view(),
          name='detail'),
+    path('<pk>/update/',
+         student_views.StudentUpdateView.as_view(),
+         name='update'),
 ]

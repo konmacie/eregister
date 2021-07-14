@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Groups | eRegister
+{% endblock title %}
+
+{% block header %}
+    Groups
+{% endblock header %}
+
+{% block header_nav %}
+    <a class="nav-link active" aria-current="page" href="{% url 'group:list' %}">All groups</a>
+    {% if perms.records.add_studentgroup %}
+        <a href="{% url 'group:create' %}" class="nav-link"><i class="bi bi-plus-lg"></i>New</a>
+    {% endif %}
+{% endblock header_nav %}
+
+
+{% block content %}
+{% include 'includes/pagination.html' %}
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <div class="table-responsive">
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Educator</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr class="align-middle">
+                    <th scope="row">
+                        <a href="{{ group.get_absolute_url }}" class="text-decoration-none">{{ group.name }}</a>
+                    </th>
+                    <td>{{ group.educator }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include 'includes/pagination.html' %}
+{% endblock content %}

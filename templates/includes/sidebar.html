@@ -1,5 +1,5 @@
 <div id="sidebar" class="col-md-4 col-lg-3 bg-dark text-white h-100 px-0 pt-2 pt-md-3">
-    <a class="h2 header-brand navbar-brand-small" href="">
+    <a class="h2 header-brand navbar-brand-small" href="{% url 'dashboard' %}">
         <i class="bi bi-book mx-3"></i>eRegister
     </a>
     <button class="navbar-toggler d-md-none collapsed float-end me-3 pt-0" type="button" data-bs-toggle="collapse"
@@ -22,7 +22,7 @@
             {% endif %}
             {% if perms.records.view_studentgroup %}
             <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{% url 'group:list' %}" class="nav-link">
                     <i class="bi bi-people"></i>Groups
                 </a>
             </li>

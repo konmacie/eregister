@@ -10,8 +10,13 @@
 {% endblock header %}
 
 {% block header_nav %}
-    <a href="{% url 'student:list' %}" class="nav-link">All students</a>
-    <a href="" class="nav-link active" aria-current="page" ><i class="bi bi-plus-lg"></i>New</a>
+    <a class="nav-link" href="{{ student.get_absolute_url }}">Information</a>
+    <a class="nav-link" href="#">Groups</a>
+    <a class="nav-link" href="#">Marks</a>
+    <a class="nav-link" href="#">Attendance</a>
+    {% if perms.records.change_student %}
+        <a href="{% url 'student:update' student.pk %}" class="nav-link active" aria-current="page"><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
 {% endblock header_nav %}
 
 
@@ -27,8 +32,8 @@
                 {% for field in form.visible_fields %}
                     <div class="col-xl-6">
                         <div class="row mb-3">
-                            <label for="{{ field.id_for_label }}" class="col-md-4 col-lg-4 col-form-label">{{ field.label }}</label>
-                            <div class="col-md-8 col-lg-8">
+                            <label for="{{ field.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">{{ field.label }}</label>
+                            <div class="col-md-8 col-lg-9">
                                 {{ field|add_class:'form-control' }}
                                 <div class="form-text">
                                     {{ field.help_text }}
@@ -41,14 +46,15 @@
                     </div>
                 {% endfor %}
             </div>
-            
             <div class="container-fluid text-end px-0">
                 <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
-                <button type="submit" name="save_and_add_next" value="save_and_add_next" class="btn btn-outline-success">Save and add next</button>
+                <button type="submit" name="save_and_continue" value="save_and_continue" class="btn btn-outline-success">Save and continue editing</button>
+                <a href="{{ student.get_absolute_url }}" class="btn btn-outline-danger">Cancel</a>
             </div>
         </div>
     </form>
 </div>
+
 
 <script>
     $( function() {
