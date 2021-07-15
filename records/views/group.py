@@ -112,14 +112,24 @@ class GroupUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
     success_message = _("Group updated successfully")
 
 
-class AssignManyToGroupView(PermissionRequiredMixin, SuccessMessageMixin,
+class AssignManyToGroupView(PermissionRequiredMixin,
                             SingleObjectMixin, FormView):
+    """
+    View to assign multiple students to a group.
+    Depending on button clicked by user, skip students with colliding
+    assignments and assign rest or display form again with error msg. 
+    """
     permission_required = ['records.add_studentgroupassignment']
     model = StudentGroup
     form_class = group_forms.AssignManyToGroupForm
     template_name = 'records/group/assign_many_to_group.html'
     context_object_name = 'group'
-    success_message = _('Students assigned successfully')
+    success_message = _('%(count)i student(s) assigned successfully')
+    warning_message = _(
+        'Assignment ended with problems, '
+        '%(count)i student(s) assigned successfully, '
+        '%(err_count)i student(s) omitted.'
+    )
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -136,20 +146,91 @@ class AssignManyToGroupView(PermissionRequiredMixin, SuccessMessageMixin,
             'date_end': form.cleaned_data['date_end'],
             'group': self.object
         }
+
+        errors = []
+        count = 0
         try:
             with transaction.atomic():
-                """ Assign students to group """
+                # Assign students to group
                 for student in students_to_add:
-                    assignment = StudentGroupAssignment(
-                        student=student, **kwargs
-                    )
-                    assignment.full_clean()
-                    assignment.save()
-        except ValidationError as err:
-            form.add_error(None, err)
+                    try:
+                        assignment = StudentGroupAssignment(
+                            student=student, **kwargs
+                        )
+                        assignment.full_clean()
+                        assignment.save()
+                        count += 1
+                    except ValidationError as error:
+                        errors.append(error)
+                if errors and 'unsafe_add' not in self.request.POST:
+                    # Raise error to rollback whole transaction,
+                    # if user didn't select option to skip collissions
+                    form.add_error(None, errors)
+                    raise ValidationError(
+                        _('Errors occurred during assignment'))
+        except ValidationError as error:
+            # Display errors after rollback
+            messages.error(self.request, error.messages[0])
             return self.form_invalid(form)
 
+        if errors:
+            messages.warning(
+                self.request,
+                self.warning_message % {
+                    'count': count,
+                    'err_count': len(errors)
+                })
+            for error in errors:
+                messages.error(
+                    self.request, error.messages[0], extra_tags='py-1')
+        else:
+            messages.success(
+                self.request,
+                self.success_message % {
+                    'count': count,
+                }
+            )
         return super().form_valid(form)
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+
+class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
+                           UpdateView):
+    """
+    View to edit group assignment
+    """
+    permission_required = ['records.change_studentgroupassignment']
+    model = StudentGroupAssignment
+    fields = ['date_start', 'date_end']
+    template_name = 'records/group/assignment_update.html'
+    context_object_name = 'assignment'
+    success_message = _('Assignment updated successfully')
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related('student', 'group')
+        return qs
+
+    def get_next_page_url(self):
+        """
+        Get url to redirect to after successful update.
+        Defaults to 'next' parameter in GET, if present.
+        """
+        if not hasattr(self, 'next'):
+            next = self.request.GET.get('next', "")
+            if next:
+                self.next = next
+            else:
+                # TODO: change to student's assignments view
+                self.next = reverse_lazy('student:detail',
+                                         kwargs={'pk': self.object.student.pk})
+        return self.next
+
+    def get_context_data(self, **kwargs):
+        kwargs['next'] = self.get_next_page_url()
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        return self.get_next_page_url()

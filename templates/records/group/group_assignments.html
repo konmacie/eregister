@@ -28,9 +28,12 @@
             <thead>
                 <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
                     <th class="col-md-1">#</th>
-                    <th class="col-md-5">Student</th>
+                    <th>Student</th>
                     <th class="col-md-3">From</th>
                     <th class="col-md-3">To</th>
+                    {% if perms.records.change_studentgroupassignment %}
+                        <th></th>
+                    {% endif %}
                 </tr>
             </thead>
             {% for assignment in current_assignments %}
@@ -51,6 +54,11 @@
                 <td>
                     {{ assignment.date_end }}
                 </td>
+                {% if perms.records.change_studentgroupassignment %}
+                    <td>
+                        <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}">Edit</a>
+                    </td>
+                {% endif %}
             </tr>
             {% empty %}
             <tr>
@@ -71,9 +79,12 @@
             <thead>
                 <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
                     <th class="col-md-1">#</th>
-                    <th class="col-md-5">Student</th>
+                    <th>Student</th>
                     <th class="col-md-3">From</th>
                     <th class="col-md-3">To</th>
+                    {% if perms.records.change_studentgroupassignment %}
+                        <th></th>
+                    {% endif %}
                 </tr>
             </thead>
             {% regroup out_of_date_assignments by student as assigments %}
@@ -89,11 +100,21 @@
                             </td>
                             <td>{{ assignment.date_start }}</td>
                             <td>{{ assignment.date_end }}</td>
+                            {% if perms.records.change_studentgroupassignment %}
+                                <td>
+                                    <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}">Edit</a>
+                                </td>
+                            {% endif %}
                         {% else %}
                             <td></td>
                             <td></td>
                             <td>{{ assignment.date_start }}</td>
                             <td>{{ assignment.date_end }}</td>
+                            {% if perms.records.change_studentgroupassignment %}
+                                <td>
+                                    <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}">Edit</a>
+                                </td>
+                            {% endif %}
                         {% endif %}
                     </tr>
                 {% endfor %}

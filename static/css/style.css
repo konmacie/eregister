@@ -117,17 +117,14 @@ main {
   display: block !important;
 }
 
-.errorlist {
-  padding: 0;
-}
-
-.errorlist li {
+.help-block {
+  display: block;
   color: #842029;
   background-color: #f8d7da;
   border-color: #f5c2c7;
-  position: relative;
-  padding: 0.5rem 0.5rem;
+  padding: 0.3rem 0.5rem;
   margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
   border: 1px solid transparent;
   border-radius: 0.25rem;
   list-style: none;

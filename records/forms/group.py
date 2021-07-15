@@ -50,7 +50,7 @@ class GroupUpdateForm(forms.ModelForm):
 class AssignManyToGroupForm(forms.Form):
     """
     Assign multiple students to group.
-    Limit select choices to students not assigned to StudentGroup.
+    Limit select choices to students without actual assignment.
     """
     students_to_add = forms.ModelMultipleChoiceField(
         queryset=get_students_without_group(),
