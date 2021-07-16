@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ student }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ student }}
+{% endblock header %}
+
+{% block header_nav %}
+    {% include 'records/student/header_nav_student.html' %}
+    <script>
+        $("#header-nav-assignments").addClass("active");
+    </script>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3">
+    <div class="card-header">Current assignment</div>
+    <div class="card-body">
+        {% if current_assignment %}
+            <div class="row">
+                <div class="col-lg-4">
+                    <p class="fw-light m-0">Group</p>
+                    <p class="m-0">
+                        <a href="{{ current_assignment.group.get_absolute_url }}" class="text-decoration-none">
+                            <i class="bi bi-link-45deg"></i> {{ current_assignment.group }}&nbsp;
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-4">
+
+                    <p class="fw-light m-0">From</p>
+                    <p class="m-0">{{ current_assignment.date_start }}</p>
+                </div>
+                <div class="col-lg-4">
+                    <p class="fw-light m-0">To</p>
+                    <p class="m-0">{{ current_assignment.date_end }}</p>
+                </div>
+                <div class="container-fluid text-end">
+                    <a href="{% url 'group:assign-update' current_assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary">Edit</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary py-1 mb-0 mt-1">
+                Currently not assigned to any group.
+            </div>    
+        {% endif %}
+        
+    </div>
+</div>
+<div class="card bg-light mb-3">
+    <div class="card-header">Out of date assignments</div>
+    <div class="card-body table-responsive">
+        <table class="table table-hover table-borderless table-sm">
+            <thead>
+                <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
+                    <th class="col-md-1">#</th>
+                    <th>Group</th>
+                    <th class="col-md-2">From</th>
+                    <th class="col-md-2">To</th>
+                    {% if perms.records.change_studentgroupassignment %}
+                        <th class="col-md-1"></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            {% for assignment in out_of_date_assignments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{{ assignment.group.get_absolute_url }}" class="text-decoration-none  text-dark">
+                            {{ assignment.group }}
+                        </a>
+                    </td>
+                    {% if assignment.future %}
+                        <td class="text-success">{{ assignment.date_start }}</td>
+                        <td class="text-success">{{ assignment.date_end }}</td>
+                    {% else %}
+                        <td class="text-danger">{{ assignment.date_start }}</td>
+                        <td class="text-danger">{{ assignment.date_end }}</td>
+                    {% endif %}
+                    
+                    {% if perms.records.change_studentgroupassignment %}
+                        <td>
+                            <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">
+                    <div class="alert alert-warning mt-1 mb-0">
+                        No out of date assignments found
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </table>
+    </div>
+</div>
+{% endblock content %}

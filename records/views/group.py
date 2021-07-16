@@ -127,7 +127,7 @@ class AssignManyToGroupView(PermissionRequiredMixin,
     """
     View to assign multiple students to a group.
     Depending on button clicked by user, skip students with colliding
-    assignments and assign rest or display form again with error msg. 
+    assignments and assign rest or display form again with error msg.
     """
     permission_required = ['records.add_studentgroupassignment']
     model = StudentGroup

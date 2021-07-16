@@ -5,7 +5,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
+from django.db.models import When, Case, Value
 from records.forms.student import StudentCreateForm
+import datetime
 
 User = get_user_model()
 
@@ -125,3 +127,40 @@ class StudentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
             return reverse_lazy('student:update',
                                 kwargs={'pk': self.object.pk})
         return super().get_success_url()
+
+
+class StudentAssignmentsView(PermissionRequiredMixin, DetailView):
+    """
+    View showing list of student's assignments.
+    Need 'records.view_studentgroup' permission to access it.
+    """
+    permission_required = ['records.view_student']
+    model = User
+    template_name = 'records/student/student_assignments.html'
+    context_object_name = 'student'
+
+    def get_queryset(self):
+        """ Prefetch assignments """
+        return super().get_queryset().prefetch_related('assignments')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # annotate out of date assignments with Boolean 'future'
+        # True for assignments with date_start later than actual date
+        today = datetime.date.today()
+        out_of_date_assignments = self.object.assignments\
+            .select_related('group')\
+            .annotate(
+                future=Case(
+                    When(date_start__gt=today, then=Value(True)),
+                    default=Value(False)
+                )
+            )
+        current_assignment = self.object.get_current_assignment()
+        if current_assignment:
+            out_of_date_assignments = out_of_date_assignments.exclude(
+                pk=current_assignment.pk)
+        context['current_assignment'] = current_assignment
+        context['out_of_date_assignments'] = out_of_date_assignments
+        return context

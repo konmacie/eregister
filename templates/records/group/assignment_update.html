@@ -17,7 +17,11 @@
 <div class="card bg-light mb-3"  style="max-width: 500px;">
     <form method="post">{% csrf_token %}
         <div class="card-body">
-            {{ form.non_field_errors }}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <p class="fw-light m-0">Student</p>
             <p class="m-0 mb-3">{{ assignment.student }}</p>
             <p class="fw-light m-0">Group</p>

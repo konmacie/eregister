@@ -1,6 +1,6 @@
 <nav class="nav d-flex flex-column flex-md-row">
     <a id="header-nav-detail" class="nav-link" href="{{ student.get_absolute_url }}">Information</a>
-    <a class="nav-link" href="#">Groups</a>
+    <a id="header-nav-assignments" class="nav-link" href="{% url 'student:assignments' student.pk %}"">Groups</a>
     <a class="nav-link" href="#">Marks</a>
     <a class="nav-link" href="#">Attendance</a>
 </nav>

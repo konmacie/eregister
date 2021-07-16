@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse
-from datetime import date
+import datetime
 
 
 class User(AbstractUser):
@@ -81,15 +81,18 @@ class User(AbstractUser):
     def is_educator(self) -> bool:
         return hasattr(self, 'educated_group')
 
-    @property
-    def student_group(self):
-        """Return currently assigned student group or None"""
-        today = date.today()
+    def get_current_assignment(self):
+        today = datetime.date.today()
         qs = self.assignments.filter(
             date_start__lte=today,
             date_end__gte=today,
         ).select_related('group')
-        assign = qs.first()
+        return qs.first()
+
+    @property
+    def student_group(self):
+        """Return currently assigned student group or None"""
+        assign = self.get_current_assignment()
         if assign:
             return assign.group
         return None
