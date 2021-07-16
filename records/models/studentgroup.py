@@ -3,7 +3,10 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.conf import settings
-from datetime import date
+from django.contrib.auth import get_user_model
+import datetime
+
+User = get_user_model()
 
 
 class StudentGroup(models.Model):
@@ -35,7 +38,13 @@ class StudentGroup(models.Model):
         related_name='educated_group'
     )
 
-    def get_assignments_by_date(self, date):
+    def get_assignments_by_date(self, date=None):
+        """
+        Return queryset of assignments to the group for specific date,
+        if date param not supplied, datetime.date.today() used
+        """
+        if not date:
+            date = datetime.date.today()
         qs = self.assignments.filter(
             date_start__lte=date,
             date_end__gte=date,
@@ -43,11 +52,40 @@ class StudentGroup(models.Model):
         return qs
 
     def get_all_assignments(self):
+        """
+        Return queryset for all assignemts to the group,
+        including out of date assignments
+        """
         qs = self.assignments.select_related('student')
         return qs
 
-    def get_current_assignments(self):
-        return self.get_assignments_by_date(date.today())
+    def get_students_by_date(self, date=None):
+        """
+        Return queryset of students assigned to the group on specific date,
+        if date param not supplied, datetime.date.today() used
+        """
+        if not date:
+            date = datetime.date.today()
+        assignments = self.get_assignments_by_date(date)
+        current_students = User.objects.filter(
+            assignments__in=assignments)
+        return current_students
+
+    def get_all_students(self):
+        """
+        Return queryset of all students assigned to the group,
+        including out of date assignments
+        """
+        all_students = User.objects.filter(
+            assignments__in=self.assignments.all()
+        ).distinct()
+        return all_students
+
+    @property
+    def current_assignments(self): return self.get_assignments_by_date()
+
+    @property
+    def current_students(self): return self.get_students_by_date()
 
     def get_absolute_url(self):
         return reverse_lazy('group:detail', kwargs={'pk': self.pk})
@@ -60,7 +98,7 @@ class StudentGroupAssignment(models.Model):
     class Meta:
         verbose_name = _('Group assignment')
         verbose_name_plural = _('Group assignments')
-        ordering = ['student__last_name', 'student__first_name']
+        ordering = ['student__last_name', 'student__first_name', 'date_start']
 
     student = models.ForeignKey(
         verbose_name=_('Student'),

@@ -8,9 +8,14 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.db import transaction
+from django.db.models import When, Case, Value
 from django.core.exceptions import ValidationError
 from records.models import StudentGroup
 from records.forms import group as group_forms
+from django.contrib.auth import get_user_model
+import datetime
+
+User = get_user_model()
 
 
 class GroupListView(PermissionRequiredMixin, ListView):
@@ -25,6 +30,7 @@ class GroupListView(PermissionRequiredMixin, ListView):
     context_object_name = 'groups'
 
     def get_queryset(self):
+        """ Prefetch educator """
         qs = super().get_queryset()
         return qs.select_related('educator')
 
@@ -42,13 +48,7 @@ class GroupDetailView(PermissionRequiredMixin, DetailView):
     def get_queryset(self):
         """ Prefetch educator """
         qs = super().get_queryset()
-        qs = qs.select_related('educator')
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['current_assignments'] = self.object.get_current_assignments()
-        return context
+        return qs.select_related('educator')
 
 
 class GroupAssignmentsView(PermissionRequiredMixin, DetailView):
@@ -63,10 +63,20 @@ class GroupAssignmentsView(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_assignments = self.object.get_current_assignments()
+        current_assignments = self.object.current_assignments
+
+        # annotate out of date assignments with Boolean 'future'
+        # True for assignments with date_start later than actual date
+        today = datetime.date.today()
         out_of_date_assignments = self.object\
             .get_all_assignments()\
-            .exclude(pk__in=current_assignments)
+            .exclude(pk__in=current_assignments)\
+            .annotate(
+                future=Case(
+                    When(date_start__gt=today, then=Value(True)),
+                    default=Value(False)
+                )
+            )
         context['current_assignments'] = current_assignments
         context['out_of_date_assignments'] = out_of_date_assignments
         return context
@@ -169,11 +179,12 @@ class AssignManyToGroupView(PermissionRequiredMixin,
                     raise ValidationError(
                         _('Errors occurred during assignment'))
         except ValidationError as error:
-            # Display errors after rollback
+            # Display errors and show form again if rollback occured
             messages.error(self.request, error.messages[0])
             return self.form_invalid(form)
 
         if errors:
+            # show messages about skipped students
             messages.warning(
                 self.request,
                 self.warning_message % {
@@ -184,6 +195,7 @@ class AssignManyToGroupView(PermissionRequiredMixin,
                 messages.error(
                     self.request, error.messages[0], extra_tags='py-1')
         else:
+            # show success msg if no skip occured
             messages.success(
                 self.request,
                 self.success_message % {
@@ -209,9 +221,9 @@ class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
     success_message = _('Assignment updated successfully')
 
     def get_queryset(self):
+        """ Prefetch student and educator """
         qs = super().get_queryset()
-        qs = qs.select_related('student', 'group')
-        return qs
+        return qs.select_related('student', 'group')
 
     def get_next_page_url(self):
         """

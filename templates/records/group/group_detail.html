@@ -38,17 +38,15 @@
             </div>
             <div class="card-body">
                 <table class="table table-hover table-borderless table-sm w-auto">
-                    {% for assignment in current_assignments %}
+                    {% for student in group.current_students %}
                     <tr>
                         <td>
                             {{ forloop.counter }}.
                         </td>
                         <td>
-                            {% with assignment.student as student %}
-                                <a href="{{ student.get_absolute_url }}" class="text-decoration-none text-dark">
-                                    {{ student.last_name }} <span class="fw-light">{{ student.first_name }}</span>
-                                </a>
-                            {% endwith %}
+                            <a href="{{ student.get_absolute_url }}" class="text-decoration-none text-dark">
+                                {{ student.last_name }} <span class="fw-light">{{ student.first_name }}</span>
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
