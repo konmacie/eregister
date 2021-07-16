@@ -52,16 +52,8 @@
                     </a>
                 </div>
                 <div class="col-md-8 col-lg-9">
-                    <div class="container d-flex flex-column flex-md-row flex-wrap px-3 mx-0 justify-content-between">
-                        <h2 class="me-3 my-3">
-                            {% block header %}{% endblock header %}
-                        </h2>
-                        <nav class="nav">
+                    <div class="container h-100 d-flex flex-column flex-md-row flex-wrap px-3 mx-0 justify-content-between fw-bold">
                             {% block header_nav %}{% endblock header_nav %}
-                            {% comment %}
-                            <a class="nav-link active" aria-current="page" href="#">Information</a>
-                            {% endcomment %}
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -70,6 +62,9 @@
             <main class="m-auto row h-100 overflow-auto">
                 {% include "includes/sidebar.html" %}
                 <div id="content" class="col-md-8 col-lg-9 p-3 pt-4">
+                    <h2 class="me-3 mb-3">
+                        {% block header %}{% endblock header %}
+                    </h2>
                     {% include "includes/messages.html" %}
                     {% block content %}{% endblock content %}
                 </div>

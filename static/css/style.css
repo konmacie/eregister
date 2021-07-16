@@ -19,6 +19,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1rem;
+}
+
+#header-container .nav-border-red .nav-link {
+  border-color: red !important;
 }
 
 #header-container nav .nav-link i {
@@ -26,7 +31,8 @@ body {
 }
 
 #header-container nav .active {
-  border-bottom: 3px solid red !important;
+  border-bottom-width: 3px !important;
+  border-bottom-style: solid !important;
 }
 
 #header,

@@ -1,0 +1,14 @@
+<nav class="nav d-flex flex-column flex-md-row">
+    <a id="header-nav-detail" class="nav-link" href="{{ student.get_absolute_url }}">Information</a>
+    <a class="nav-link" href="#">Groups</a>
+    <a class="nav-link" href="#">Marks</a>
+    <a class="nav-link" href="#">Attendance</a>
+</nav>
+<nav class="nav nav-border-red d-flex flex-column flex-md-row">
+    {% if perms.records.add_studentgroupassignment %}
+        <a id="header-nav-assign" href="" class="nav-link text-danger"><i class="bi bi-person-plus"></i>Assign to a group</span></a>
+    {% endif %}
+    {% if perms.records.change_student %}
+        <a id="header-nav-update" href="{% url 'student:update' student.pk %}" class="nav-link text-danger" ><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
+</nav>

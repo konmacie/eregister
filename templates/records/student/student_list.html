@@ -9,10 +9,10 @@
 {% endblock header %}
 
 {% block header_nav %}
-    <a class="nav-link active" aria-current="page" href="{% url 'student:list' %}">All students</a>
-    {% if perms.records.add_student %}
-        <a href="{% url 'student:create' %}" class="nav-link"><i class="bi bi-plus-lg"></i>New</a>
-    {% endif %}
+{% include 'records/student/header_nav_list.html' %}
+<script>
+    $("#header-nav-list").addClass("active");
+</script>
 {% endblock header_nav %}
 
 

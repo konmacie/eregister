@@ -2,21 +2,18 @@
 {% load widget_tweaks %}
 
 {% block title %}
-    New student | eRegister
+    {{ object }} | eRegister
 {% endblock title %}
 
 {% block header %}
-    New student
+    {{ object }}
 {% endblock header %}
 
 {% block header_nav %}
-    <a class="nav-link" href="{{ student.get_absolute_url }}">Information</a>
-    <a class="nav-link" href="#">Groups</a>
-    <a class="nav-link" href="#">Marks</a>
-    <a class="nav-link" href="#">Attendance</a>
-    {% if perms.records.change_student %}
-        <a href="{% url 'student:update' student.pk %}" class="nav-link active" aria-current="page"><i class="bi bi-pencil"></i>Edit</a>
-    {% endif %}
+{% include 'records/student/header_nav_student.html' %}
+<script>
+    $("#header-nav-update").addClass("active");
+</script>
 {% endblock header_nav %}
 
 

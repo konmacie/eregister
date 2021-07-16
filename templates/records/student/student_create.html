@@ -10,8 +10,10 @@
 {% endblock header %}
 
 {% block header_nav %}
-    <a href="{% url 'student:list' %}" class="nav-link">All students</a>
-    <a href="" class="nav-link active" aria-current="page" ><i class="bi bi-plus-lg"></i>New</a>
+{% include 'records/student/header_nav_list.html' %}
+<script>
+    $("#header-nav-create").addClass("active");
+</script>
 {% endblock header_nav %}
 
 
