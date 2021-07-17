@@ -78,9 +78,7 @@
                     <th>Student</th>
                     <th class="col-md-2">From</th>
                     <th class="col-md-2">To</th>
-                    {% if perms.records.change_studentgroupassignment %}
-                        <th class="col-md-1"></th>
-                    {% endif %}
+                    <th class="col-md-1"></th>
                 </tr>
             </thead>
             {% regroup out_of_date_assignments by student as assigments %}
@@ -89,11 +87,7 @@
                         {% if forloop.first %}
                         <tr>
                             <td>{{ forloop.parentloop.counter }}</td>
-                            {% if perms.records.change_studentgroupassignment %}
-                                <td colspan="4">
-                            {% else %} 
-                                <td colspan="3">
-                            {% endif %}
+                            <td colspan="4">
                                 <a href="{{ student.grouper.get_absolute_url }}" class="text-decoration-none text-dark">
                                     {{ student.grouper.last_name }} <span class="fw-light">{{ student.grouper.first_name }}</span>
                                 </a>
@@ -110,12 +104,11 @@
                             <td class="text-danger">{{ assignment.date_start }}</td>
                             <td class="text-danger">{{ assignment.date_end }}</td>
                         {% endif %}
-                        
+                        <td>
                         {% if perms.records.change_studentgroupassignment %}
-                            <td>
-                                <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
-                            </td>
+                            <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
                         {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 <tr>
@@ -123,7 +116,7 @@
                 </tr>
             {% empty %}
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="alert alert-warning mt-1 mb-0">
                         No out of date assignments found
                     </div>

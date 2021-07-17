@@ -235,8 +235,7 @@ class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
             if next:
                 self.next = next
             else:
-                # TODO: change to student's assignments view
-                self.next = reverse_lazy('student:detail',
+                self.next = reverse_lazy('student:assignments',
                                          kwargs={'pk': self.object.student.pk})
         return self.next
 

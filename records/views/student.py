@@ -4,9 +4,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.contrib import messages
 from django.db.models import When, Case, Value
-from records.forms.student import StudentCreateForm
+from django.shortcuts import get_object_or_404
+from records.forms.student import StudentCreateForm, AssignToGroupForm
+from records.models import StudentGroupAssignment
 import datetime
 
 User = get_user_model()
@@ -22,11 +23,7 @@ class StudentListView(PermissionRequiredMixin, ListView):
     template_name = 'records/student/student_list.html'
     paginate_by = 20
     context_object_name = 'students'
-
-    def get_queryset(self):
-        """ Limit queryset to student accounts. """
-        qs = super().get_queryset()
-        return qs.filter(is_teacher=False)
+    queryset = User.objects.filter(is_teacher=False)
 
 
 class StudentDetailView(PermissionRequiredMixin, DetailView):
@@ -41,11 +38,7 @@ class StudentDetailView(PermissionRequiredMixin, DetailView):
     model = User
     template_name = 'records/student/student_detail.html'
     context_object_name = 'student'
-
-    def get_queryset(self):
-        """ Limit queryset to users without teacher status. """
-        qs = super().get_queryset()
-        return qs.filter(is_teacher=False)
+    queryset = User.objects.filter(is_teacher=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,17 +101,13 @@ class StudentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
     """
     permission_required = ['records.change_student']
     model = User
+    queryset = User.objects.filter(is_teacher=False)
     form_class = StudentCreateForm
     template_name = 'records/student/student_update.html'
     context_object_name = 'student'
     success_message = _("Student profile updated successfully")
 
-    def get_queryset(self):
-        """ Limit queryset to users without teacher status. """
-        qs = super().get_queryset()
-        return qs.filter(is_teacher=False)
-
-    def get_success_url(self) -> str:
+    def get_success_url(self):
         """
         Depending on button clicked, redirect to student profile
         or to change form again.
@@ -136,12 +125,11 @@ class StudentAssignmentsView(PermissionRequiredMixin, DetailView):
     """
     permission_required = ['records.view_student']
     model = User
+    queryset = User.objects\
+        .filter(is_teacher=False)\
+        .prefetch_related('assignments')
     template_name = 'records/student/student_assignments.html'
     context_object_name = 'student'
-
-    def get_queryset(self):
-        """ Prefetch assignments """
-        return super().get_queryset().prefetch_related('assignments')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -164,3 +152,40 @@ class StudentAssignmentsView(PermissionRequiredMixin, DetailView):
         context['current_assignment'] = current_assignment
         context['out_of_date_assignments'] = out_of_date_assignments
         return context
+
+
+class AssignToGroupView(PermissionRequiredMixin, SuccessMessageMixin,
+                        CreateView):
+    """
+    View to assign student to a group.
+    """
+    permission_required = ['records.add_studentgroupassignment']
+    model = StudentGroupAssignment
+    form_class = AssignToGroupForm
+    template_name = 'records/student/assign_to_group.html'
+    success_message = _('%(student)s assigned successfully to %(group)s')
+
+    def _get_student(self):
+        pk = self.kwargs.get('pk')
+        student = get_object_or_404(User, pk=pk, is_teacher=False)
+        return student
+
+    def get(self, request, *args, **kwargs):
+        self.student = self._get_student()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.student = self._get_student()
+        return super().post(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs['student'] = self.student
+        return super().get_context_data(**kwargs)
+
+    def get_initial(self):
+        return {'student': self.student}
+
+    def get_success_url(self):
+        return reverse_lazy('student:assignments', kwargs={
+            'pk': self.student.pk
+        })

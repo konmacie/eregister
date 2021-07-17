@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {{ student }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ student }}
+{% endblock header %}
+
+{% block header_nav %}
+{% include 'records/student/header_nav_student.html' %}
+<script>
+    $("#header-nav-assign").addClass("active");
+</script>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3"  style="max-width: 500px;">
+    <form method="post">{% csrf_token %}
+        <div class="card-body">
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <p class="fw-light m-0">Student</p>
+            <p class="m-0 mb-3">{{ student }}</p>
+            <hr>
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ field.help_text }}
+                </div>
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endfor %}
+            
+            <div class="container-fluid text-end px-0 mt-3">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        $("#id_date_start").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-3:+3",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+        $("#id_date_end").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-3:+3",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+    });
+</script>
+{% endblock content %}

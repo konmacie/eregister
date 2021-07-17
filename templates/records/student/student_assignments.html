@@ -44,7 +44,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="alert alert-secondary py-1 mb-0 mt-1">
+            <div class="alert alert-warning mb-0 mt-1">
                 Currently not assigned to any group.
             </div>    
         {% endif %}
@@ -61,9 +61,7 @@
                     <th>Group</th>
                     <th class="col-md-2">From</th>
                     <th class="col-md-2">To</th>
-                    {% if perms.records.change_studentgroupassignment %}
-                        <th class="col-md-1"></th>
-                    {% endif %}
+                    <th class="col-md-1"></th>
                 </tr>
             </thead>
             {% for assignment in out_of_date_assignments %}
@@ -81,16 +79,16 @@
                         <td class="text-danger">{{ assignment.date_start }}</td>
                         <td class="text-danger">{{ assignment.date_end }}</td>
                     {% endif %}
-                    
+                
+                    <td>
                     {% if perms.records.change_studentgroupassignment %}
-                        <td>
-                            <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
-                        </td>
+                        <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
                     {% endif %}
+                    </td>
                 </tr>
             {% empty %}
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="alert alert-warning mt-1 mb-0">
                         No out of date assignments found
                     </div>
