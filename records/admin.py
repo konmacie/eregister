@@ -32,6 +32,17 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('last_name',)
 
 
+class StudentGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'educator')
+    search_fields = ('name', 'educator__first_name', 'educator__last_name')
+
+
+class StudentGroupAssignmentAdmin(admin.ModelAdmin):
+    list_display = ('student', 'group', 'date_start', 'date_end')
+    search_fields = ('student__first_name',
+                     'student__last_name', 'group__name')
+
+
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(StudentGroup)
-admin.site.register(StudentGroupAssignment)
+admin.site.register(StudentGroup, StudentGroupAdmin)
+admin.site.register(StudentGroupAssignment, StudentGroupAssignmentAdmin)
