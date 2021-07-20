@@ -24,4 +24,13 @@ urlpatterns = [
     path('assignment/<pk>/',
          group_views.AssignmentUpdateView.as_view(),
          name='assign-update'),
+    path('<pk>/courses/',
+         group_views.GroupCoursesView.as_view(),
+         name='courses'),
+    path('<pk>/courses/new/',
+         group_views.CourseCreateView.as_view(),
+         name='course-create'),
+    path('course/<pk>/',
+         group_views.CourseUpdateView.as_view(),
+         name='course-update'),
 ]

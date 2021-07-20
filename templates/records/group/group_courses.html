@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ group }} | eRegister
+{% endblock title %}
+
+
+{% block header_nav %}
+    {% include 'records/group/header_nav_group.html' %}
+    <script>
+        $("#header-nav-courses").addClass("active");
+    </script>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3">
+    <div class="card-header">Courses</div>
+    <div class="card-body table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr style="border-bottom: 1px solid rgb(100, 100, 100);">
+                    <th class="col-md-1">#</th>
+                    <th>Course name</th>
+                    <th class="col-md-1"></th>
+                </tr>
+            </thead>
+            {% for course in courses %}
+            <tr>
+                <td>
+                    {{ forloop.counter }}.
+                </td>
+                <td>
+                    {{ course }}
+                </td>
+                <td>
+                    {% if perms.records.change_course %}
+                        <a href="{% url 'group:course-update' course.pk %}" class="btn btn-outline-primary py-0 my-0">Edit</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">
+                    <div class="alert alert-warning mb-0">
+                        No courses found
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock content %}

@@ -183,7 +183,9 @@ class AssignToGroupView(PermissionRequiredMixin, SuccessMessageMixin,
         return super().get_context_data(**kwargs)
 
     def get_initial(self):
-        return {'student': self.student}
+        initial = super().get_initial()
+        initial['student'] = self.student
+        return initial
 
     def get_success_url(self):
         return reverse_lazy('student:assignments', kwargs={

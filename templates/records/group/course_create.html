@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {{ group }} | eRegister
+{% endblock title %}
+
+
+{% block header_nav %}
+{% include 'records/group/header_nav_group.html' %}
+<script>
+    $("#header-nav-create-course").addClass("active");
+</script>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3"  style="max-width: 500px;">
+    <div class="card-header">
+        Add course to: {{ group }}
+    </div>
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+            {{ field|add_class:'form-control' }}
+            <div class="form-text">
+                {{ field.help_text }}
+            </div>
+                {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endfor %}
+    
+            <div class="container-fluid text-end px-0 mt-3">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

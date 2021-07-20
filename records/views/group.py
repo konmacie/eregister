@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from records.models.studentgroup import StudentGroupAssignment
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
@@ -10,7 +11,7 @@ from django.views.generic.edit import FormView
 from django.db import transaction
 from django.db.models import When, Case, Value
 from django.core.exceptions import ValidationError
-from records.models import StudentGroup
+from records.models import StudentGroup, Course
 from records.forms import group as group_forms
 from django.contrib.auth import get_user_model
 import datetime
@@ -245,3 +246,89 @@ class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
 
     def get_success_url(self):
         return self.get_next_page_url()
+
+
+class GroupCoursesView(PermissionRequiredMixin, ListView):
+    """
+    View to show list of Courses for a StudentGroup.
+    """
+    permission_required = ['records.view_studentgroup']
+    model = Course
+    template_name = 'records/group/group_courses.html'
+    paginate_by = 20
+    context_object_name = 'courses'
+
+    def _get_group(self):
+        pk = self.kwargs.get('pk')
+        group = get_object_or_404(StudentGroup, pk=pk)
+        return group
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        self.group = self._get_group()
+        return qs.filter(group=self.group)
+
+    def get_context_data(self, **kwargs):
+        kwargs['group'] = self.group
+        return super().get_context_data(**kwargs)
+
+
+class CourseCreateView(PermissionRequiredMixin, SuccessMessageMixin,
+                       CreateView):
+    """
+    View to create course for a group.
+    """
+    permission_required = ['records.add_course']
+    model = Course
+    form_class = group_forms.CourseCreateForm
+    template_name = 'records/group/course_create.html'
+    success_message = _('Course - %(name)s - created successfully')
+
+    def _get_group(self):
+        pk = self.kwargs.get('pk')
+        group = get_object_or_404(StudentGroup, pk=pk)
+        return group
+
+    def get(self, request, *args, **kwargs):
+        self.group = self._get_group()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.group = self._get_group()
+        return super().post(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs['group'] = self.group
+        return super().get_context_data(**kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['group'] = self.group
+        return initial
+
+    def get_success_url(self):
+        return reverse_lazy('group:courses', kwargs={
+            'pk': self.group.pk
+        })
+
+
+class CourseUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
+                       UpdateView):
+    """
+    View to update course
+    """
+    permission_required = ['records.change_course']
+    model = Course
+    fields = ['name']
+    template_name = 'records/group/course_update.html'
+    context_object_name = 'course'
+    success_message = _('Course - %(name)s - updated successfully')
+
+    def get_context_data(self, **kwargs):
+        kwargs['group'] = self.object.group
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('group:courses', kwargs={
+            'pk': self.object.group.pk
+        })

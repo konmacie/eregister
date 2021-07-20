@@ -1,12 +1,16 @@
 <nav class="nav d-flex flex-column flex-md-row">
     <a id="header-nav-detail" class="nav-link fs-5 fw-bold" href="{% url 'group:detail' group.pk %}">{{ group }}</a>
     <a id="header-nav-assignments" class="nav-link" href="{% url 'group:assignments' group.pk %}">Assignments</a>
+    <a id="header-nav-courses" class="nav-link" href="{% url 'group:courses' group.pk %}">Courses</a>
 </nav>
 <nav class="nav nav-border-red d-flex flex-column flex-md-row">
-    {% if perms.records.add_studentgroupassignment %}
-        <a id="header-nav-assign-many" href="{% url 'group:assign-many' group.pk %}" class="nav-link text-danger"><i class="bi bi-person-plus"></i>Assign students</a>
-    {% endif %}
     {% if perms.records.change_studentgroup %}
         <a id="header-nav-update" href="{% url 'group:update' group.pk %}" class="nav-link text-danger"><i class="bi bi-pencil"></i>Edit</a>
+    {% endif %}
+    {% if perms.records.add_studentgroupassignment %}
+        <a id="header-nav-assign-many" href="{% url 'group:assign-many' group.pk %}" class="nav-link text-danger"></i>Assign students</a>
+    {% endif %}
+    {% if perms.records.add_course %}
+        <a id="header-nav-create-course" href="{% url 'group:course-create' group.pk %}" class="nav-link text-danger"></i>Add course</a>
     {% endif %}
 </nav>

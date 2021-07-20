@@ -1,3 +1,4 @@
+from records.models.course import Course
 from django import forms
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -84,3 +85,15 @@ class AssignManyToGroupForm(forms.Form):
                     "End date can't be earlier than start date."
                 )
             })
+
+
+class CourseCreateForm(forms.ModelForm):
+    group = forms.ModelChoiceField(
+        queryset=StudentGroup.objects,
+        disabled=True,
+        widget=forms.HiddenInput()
+    )
+
+    class Meta:
+        model = Course
+        fields = '__all__'

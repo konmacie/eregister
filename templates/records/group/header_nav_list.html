@@ -1,5 +1,9 @@
 <nav class="nav  d-flex flex-column flex-md-row">
     <a id="header-nav-list" class="nav-link"  href="{% url 'group:list' %}">All groups</a>
+    {% if request.user.educated_group %}
+        <a id="header-nav-list" class="nav-link"  href="{{ request.user.educated_group.get_absolute_url }}">My group</a>
+        
+    {% endif %}
 </nav>
 <nav class="nav nav-border-red d-flex flex-column flex-md-row">
     {% if perms.records.add_studentgroup %}

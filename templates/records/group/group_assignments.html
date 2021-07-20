@@ -24,9 +24,7 @@
                     <th>Student</th>
                     <th class="col-md-2">From</th>
                     <th class="col-md-2">To</th>
-                    {% if perms.records.change_studentgroupassignment %}
-                        <th class="col-md-1"></th>
-                    {% endif %}
+                    <th class="col-md-1"></th>
                 </tr>
             </thead>
             {% for assignment in current_assignments %}
@@ -47,15 +45,15 @@
                 <td>
                     {{ assignment.date_end }}
                 </td>
-                {% if perms.records.change_studentgroupassignment %}
-                    <td>
+                <td>
+                    {% if perms.records.change_studentgroupassignment %}
                         <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
-                    </td>
-                {% endif %}
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="alert alert-warning mb-0">
                         No current assignments found
                     </div>

@@ -23,6 +23,7 @@ class Course(models.Model):
         verbose_name = _('Course')
         verbose_name_plural = _('Courses')
         ordering = ['name']
+        unique_together = ['name', 'group']
 
     def __str__(self):
         return str(self.name)
