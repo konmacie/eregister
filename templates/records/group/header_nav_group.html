@@ -1,5 +1,5 @@
 <nav class="nav d-flex flex-column flex-md-row">
-    <a id="header-nav-detail" class="nav-link" href="{% url 'group:detail' group.pk %}">Information</a>
+    <a id="header-nav-detail" class="nav-link fs-5 fw-bold" href="{% url 'group:detail' group.pk %}">{{ group }}</a>
     <a id="header-nav-assignments" class="nav-link" href="{% url 'group:assignments' group.pk %}">Assignments</a>
 </nav>
 <nav class="nav nav-border-red d-flex flex-column flex-md-row">

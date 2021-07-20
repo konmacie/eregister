@@ -12,7 +12,11 @@ body {
 }
 
 #header-container nav .nav-link:hover {
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(13, 110, 253, 0.2);
+}
+
+#header-container .nav-border-red .nav-link:hover {
+  background-color: rgb(220, 53, 69, 0.2);
 }
 
 #header-container nav .nav-link {
@@ -33,6 +37,13 @@ body {
 #header-container nav .active {
   border-bottom-width: 3px !important;
   border-bottom-style: solid !important;
+  background-color: rgb(13, 110, 253, 0.1);
+}
+
+#header-container .nav-border-red .active {
+  border-bottom-width: 3px !important;
+  border-bottom-style: solid !important;
+  background-color: rgb(220, 53, 69, 0.1);
 }
 
 #header,

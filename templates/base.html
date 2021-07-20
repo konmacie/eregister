@@ -52,7 +52,7 @@
                     </a>
                 </div>
                 <div class="col-md-8 col-lg-9">
-                    <div class="container h-100 d-flex flex-column flex-md-row flex-wrap px-3 mx-0 justify-content-between fw-bold">
+                    <div class="container-md h-100 d-flex flex-column flex-md-row flex-wrap px-3 mx-0 justify-content-between">
                             {% block header_nav %}{% endblock header_nav %}
                     </div>
                 </div>
@@ -62,9 +62,11 @@
             <main class="m-auto row h-100 overflow-auto">
                 {% include "includes/sidebar.html" %}
                 <div id="content" class="col-md-8 col-lg-9 p-3 pt-4">
+                    {% comment %}
                     <h2 class="me-3 mb-3">
                         {% block header %}{% endblock header %}
                     </h2>
+                    {% endcomment %}
                     {% include "includes/messages.html" %}
                     {% block content %}{% endblock content %}
                 </div>

@@ -5,9 +5,6 @@
     {{ group }} | eRegister
 {% endblock title %}
 
-{% block header %}
-    {{ group }}
-{% endblock header %}
 
 {% block header_nav %}
 {% include 'records/group/header_nav_group.html' %}
@@ -25,8 +22,9 @@
 
 {% endif %}
 <div class="card bg-light mb-3"  style="max-width: 500px;">
-    <form method="post">{% csrf_token %}
-        <div class="card-body">
+    <div class="card-header">Assign students to: {{ group }}</div>
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
@@ -46,8 +44,8 @@
                 <button type="submit" name="unsafe_add" value="unsafe_add" class="btn btn-outline-success">Assign (skip collissions)</button>
                 <a href="{{ object.get_absolute_url }}" class="btn btn-outline-danger">Cancel</a>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <script>

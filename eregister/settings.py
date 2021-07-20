@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'records',
-    'schedule'
 ]
 
 MIDDLEWARE = [

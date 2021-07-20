@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from records.models import User, StudentGroup, StudentGroupAssignment
+from records.models import *
 from django.utils.translation import gettext_lazy as _
 # Register your models here.
 
@@ -43,6 +43,24 @@ class StudentGroupAssignmentAdmin(admin.ModelAdmin):
                      'student__last_name', 'group__name')
 
 
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('name', 'group')
+    search_fields = ('name', 'group__name')
+
+
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('course', 'get_group', 'teacher',
+                    'date_start', 'date_end', 'day_of_week', 'period')
+    search_fields = ('name', 'course__group__name',
+                     'teacher__first_name', 'teacher__last_name')
+
+    def get_group(self, obj):
+        return obj.course.group
+
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(StudentGroup, StudentGroupAdmin)
 admin.site.register(StudentGroupAssignment, StudentGroupAssignmentAdmin)
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Period)
+admin.site.register(Schedule, ScheduleAdmin)

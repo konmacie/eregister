@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('schedule.urls.misc')),
+    path('', include('records.urls.misc')),
     path('student/', include('records.urls.student')),
     path('group/', include('records.urls.group')),
     path('auth/', include('records.urls.auth')),
