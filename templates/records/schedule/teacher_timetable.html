@@ -1,0 +1,75 @@
+{% extends 'base.html' %} 
+{% load widget_tweaks %}
+
+{% block title %}
+    Schedule | eRegister
+{% endblock title %}
+
+{% block header %}
+    Schedule
+{% endblock header %}
+
+{% block header_nav %}
+{% endblock header_nav %}
+
+{% block content %}
+<div class="card bg-light mb-3">
+    <form method="post">{% csrf_token %}
+        <div class="card-body row">
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <div class="col-sm-6 mb-3">
+                <label for="{{ form.teacher.id_for_label }}">{{ form.teacher.label }}</label>
+                {{ form.teacher|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ form.teacher.help_text }}
+                </div>
+                {% for error in form.teacher.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="col-sm-6 mb-3">
+                <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+                {{ form.date|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ form.date.help_text }}
+                </div>
+                {% for error in form.date.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="container-fluid text-end px-2">
+                <div class="form-check d-inline-block me-3">
+                    {{ form.full_week|add_class:'form-check-input' }}
+                    <label class="form-check-label" for="{{ form.full_week.id_for_label }}">{{ form.full_week.label }}</label>
+                    <div class="form-text">
+                        {{ form.full_week.help_text }}
+                    </div>
+                </div>
+                <button type="submit" name="show" value="show" class="btn btn-primary">Show</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if timetable %} 
+<div class="card bg-light mb-3 table-responsive">
+    {% include 'includes/timetable.html' %}
+</div>
+{% endif %}
+
+<script>
+
+    $( function() {
+      $( "#id_date" ).datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "-2:+2",
+        dateFormat: "yy-mm-dd",
+        firstDay: 1
+      });
+    } );
+</script>
+{% endblock content %}

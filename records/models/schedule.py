@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.db import models
-from django.db.models.deletion import PROTECT
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
@@ -35,7 +34,7 @@ class Schedule(models.Model):
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         limit_choices_to={'is_teacher': True},
-        on_delete=PROTECT,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
         verbose_name=_('Teacher')
@@ -69,8 +68,13 @@ class Schedule(models.Model):
 
     class Meta:
         verbose_name = _('Schedule entry')
-        verbose_name_plural = _('Schedule entry')
-        ordering = ['-date_start']
+        verbose_name_plural = _('Schedule entries')
+        ordering = ['date_start']
+
+    def save(self, *args, **kwargs):
+        """ Override save method to make it atomic with post_save signal """
+        with transaction.atomic():
+            super().save(*args, **kwargs)
 
     def _get_same_time_entries_qs(self):
         """
@@ -99,24 +103,16 @@ class Schedule(models.Model):
         qs = qs.filter(teacher=self.teacher)
         return list(qs)
 
-    def clean(self) -> None:
-        super().clean()
-        # check if ending date isn't earlier than starting date
-        if self.date_end < self.date_start:
-            raise ValidationError({
-                'date_end': _("Ending date can't "
-                              "be earlier than starting date.")
-            })
-
-        self.day_of_week = self.date_start.weekday()
-
-        # check for collisions (if selected teacher or student group
-        # already have planned lesson at that time)
+    def _check_collisions(self):
+        """
+        Check for collisions (if selected teacher or student group
+        already have planned lesson at that time)
+        """
         raise_error = False
         errors = {}
         qs = self._get_same_time_entries_qs()
         collisions_group = self._get_collisions_by_group(qs)
-        collisions_teacher = self._get_collisions_by_group(qs)
+        collisions_teacher = self._get_collisions_by_teacher(qs)
         error_msg = _("Colliding entries: %(collisions)s")
         if collisions_group:
             errors['course'] = error_msg % {
@@ -131,6 +127,25 @@ class Schedule(models.Model):
 
         if raise_error:
             raise ValidationError(errors)
+
+    def clean(self) -> None:
+        super().clean()
+        # check if ending date isn't earlier than starting date
+        if self.date_end < self.date_start:
+            raise ValidationError({
+                'date_end': _("Ending date can't "
+                              "be earlier than starting date.")
+            })
+
+        # limit schedule length
+        dates_diff = self.date_end - self.date_start
+        if dates_diff.days > 365:
+            raise ValidationError({
+                'date_end': _("Schedule length can't exceed 365 days.")
+            })
+
+        self.day_of_week = self.date_start.weekday()
+        self._check_collisions()
 
     def __str__(self) -> str:
         return "{}, {}, {} ({}, {} - {})".format(

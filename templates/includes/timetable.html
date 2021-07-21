@@ -1,0 +1,36 @@
+<table class="table text-center table-bordered mb-0">
+    <thead class="border-bottom-0">
+        <tr>
+            <th style="width:9%">Period</th>
+            {% for date, name in days.items %}
+                <td style="width:13%">
+                    <p class="lead mb-1">{{ name }}</p>
+                    <p class="small mb-0">{{ date }}</p>
+                </td>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody class="align-middle">
+        {% for period, lessons in timetable.items %}
+            <tr>
+                <td style="width:9%">
+                    <p class="my-0 small text-start">{{ period.time_start }}</p>
+                    <p class="mb-2 h4">{{ forloop.counter }}</p>
+                    <p class="my-0 small text-end">{{ period.time_end }}</p>
+                </td>
+                {% for lesson in lessons %}
+                    <td style="width:13%">
+                        {% if lesson %}
+                            <div class=" px-1">
+                                <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
+                                <hr class="my-1">
+                                <p class="my-0 small">{{ lesson.schedule.course.group }}</p>
+                                <p class="my-0 small">{{ lesson.schedule.teacher }}</p>
+                            </div>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

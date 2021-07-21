@@ -58,9 +58,24 @@ class ScheduleAdmin(admin.ModelAdmin):
         return obj.course.group
 
 
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ('date', 'status', 'short_subject',
+                    'get_course', 'get_group', 'get_teacher')
+
+    def get_course(self, obj):
+        return obj.schedule.course
+
+    def get_group(self, obj):
+        return obj.schedule.course.group
+
+    def get_teacher(self, obj):
+        return obj.schedule.teacher
+
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(StudentGroup, StudentGroupAdmin)
 admin.site.register(StudentGroupAssignment, StudentGroupAssignmentAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Period)
 admin.site.register(Schedule, ScheduleAdmin)
+admin.site.register(Lesson, LessonAdmin)

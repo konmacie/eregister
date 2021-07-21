@@ -7,7 +7,8 @@ class Course(models.Model):
         _('Name'),
         max_length=50,
         blank=False,
-        null=False
+        null=False,
+        help_text=_('Required')
     )
 
     group = models.ForeignKey(
@@ -26,4 +27,8 @@ class Course(models.Model):
         unique_together = ['name', 'group']
 
     def __str__(self):
+        # return "%(name)s (%(group)s)" % {
+        #     'name': self.name,
+        #     'group': self.group.name
+        # }
         return str(self.name)
