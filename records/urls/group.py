@@ -33,4 +33,10 @@ urlpatterns = [
     path('course/<pk>/',
          group_views.CourseUpdateView.as_view(),
          name='course-update'),
+    path('<pk>/schedule/',
+         group_views.GroupScheduleView.as_view(),
+         name='schedule'),
+    path('<pk>/schedule/<date>/<int:full_week>/',
+         group_views.GroupScheduleView.as_view(),
+         name='schedule-specified'),
 ]

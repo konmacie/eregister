@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from records.utils.user import get_students_without_group
 from records.models import StudentGroup
+from datetime import date
 
 User = get_user_model()
 
@@ -97,3 +98,17 @@ class CourseCreateForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = '__all__'
+
+
+class GroupDateScheduleForm(forms.Form):
+    """ Used for filtering group's schedule on group's info page """
+    date = forms.DateField(
+        initial=date.today,
+        required=True
+    )
+
+    full_week = forms.BooleanField(
+        initial=True,
+        label=_('Show whole week'),
+        required=False
+    )

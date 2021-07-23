@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.urls.base import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from records.models import lesson
 
 
 class Schedule(models.Model):
@@ -147,6 +149,16 @@ class Schedule(models.Model):
         self.day_of_week = self.date_start.weekday()
         self._check_collisions()
 
+    @property
+    def is_editable(self):
+        """
+        Check for related Lessons with realized status.
+        Return False if any exist, True otherwise. Used in Schedule
+        update view to limit modifiable fields.
+        """
+        qs = self.lessons.filter(status=lesson.Lesson.STATUS_REALIZED)
+        return False if qs.exists() else True
+
     def __str__(self) -> str:
         return "{}, {}, {} ({}, {} - {})".format(
             self.course,
@@ -156,3 +168,11 @@ class Schedule(models.Model):
             self.date_start,
             self.date_end
         )
+
+    def get_absolute_url(self):
+        kwargs = {
+            'pk': self.course.group.pk,
+            'date': self.date_start,
+            'full_week': 1,
+        }
+        return reverse_lazy("group:schedule-specified", kwargs=kwargs)

@@ -8,7 +8,7 @@
 {% block header_nav %}
 {% include 'records/schedule/header_nav.html' %}
 <script>
-    $("#header-nav-teacher").addClass("active");
+    $("#header-nav-group").addClass("active");
 </script>
 {% endblock header_nav %}
 
@@ -26,12 +26,12 @@
                 {{ hidden }}
             {% endfor %}
             <div class="col-sm-6 mb-3">
-                <label for="{{ form.teacher.id_for_label }}">{{ form.teacher.label }}</label>
-                {{ form.teacher|add_class:'form-control' }}
+                <label for="{{ form.teacher.id_for_label }}">{{ form.group.label }}</label>
+                {{ form.group|add_class:'form-control' }}
                 <div class="form-text">
-                    {{ form.teacher.help_text }}
+                    {{ form.group.help_text }}
                 </div>
-                {% for error in form.teacher.errors %}
+                {% for error in form.group.errors %}
                     <span class="help-block">{{ error }}</span>
                 {% endfor %}
             </div>
@@ -68,7 +68,7 @@
 <script>
 
     $(function () {
-            $('#id_teacher').select2();
+            $('#id_group').select2();
             $("#id_date").datepicker({
                 changeMonth: true,
                 changeYear: true,

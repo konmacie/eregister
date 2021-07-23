@@ -47,7 +47,7 @@
         <div id="header-container">
             <div id="header" class="m-auto row">
                 <div id="header-brand-container" class="col-md-4 col-lg-3 py-3">
-                    <a class="h2 header-brand" href="{% url 'dashboard' %}">
+                    <a class="h2 header-brand" href="{% url 'dashboard:start' %}">
                         <i class="bi bi-book mx-3"></i>eRegister
                     </a>
                 </div>
@@ -62,11 +62,6 @@
             <main class="m-auto row h-100 overflow-auto">
                 {% include "includes/sidebar.html" %}
                 <div id="content" class="col-md-8 col-lg-9 p-3 pt-4">
-                    {% comment %}
-                    <h2 class="me-3 mb-3">
-                        {% block header %}{% endblock header %}
-                    </h2>
-                    {% endcomment %}
                     {% include "includes/messages.html" %}
                     {% block content %}{% endblock content %}
                 </div>

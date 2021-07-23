@@ -34,8 +34,8 @@ def sync_lessons(sender, instance, created, **kwargs):
             # raise ValidationError if any exists
             realized_lessons = list(to_delete_realized)
             error_msg = _(
-                "Can't modify schedule dates "
-                "with realized lessons: %(realized)s"
+                "Invalid dates - realized lessons out of range: "
+                "%(realized)s"
             ) % {'realized': ", ".join(map(str, realized_lessons))}
             raise ValidationError({
                 'date_end': error_msg

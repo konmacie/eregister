@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Add schedule | eRegister
+{% endblock title %}
+
+
+{% block header_nav %}
+<nav class="nav d-flex flex-column flex-md-row">
+    {% if next %}
+        <a id="header-nav-list" class="nav-link text-danger" href="{{ next }}"><i class="bi bi-chevron-left"></i>Back</a>
+    {% endif %}
+</nav>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="card bg-light mb-3" style="max-width: 500px;">
+    <div class="card-header">
+        {{ group }}
+    </div>
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ field.help_text }}
+                </div>
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endfor %}
+            <div class="container-fluid text-end px-0 mt-3">
+                <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#id_teacher').select2();
+
+        $("#id_date_start").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-1:+1",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+        $("#id_date_end").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-1:+1",
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+        $("#id_day_of_week").prop("disabled", true);
+    });
+
+    $("#id_date_start").change(function(){
+        date = new Date(this.value);
+        day_of_week = date.getDay() - 1;
+        if (day_of_week == -1) day_of_week = 6;
+        $("#id_day_of_week").val(day_of_week);
+    });
+</script>
+{% endblock content %}

@@ -131,7 +131,7 @@ AUTH_USER_MODEL = 'records.User'
 
 
 LOGIN_URL = 'auth:login'
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'dashboard:start'
 LOGOUT_REDIRECT_URL = 'auth:login'
 
 # Configure logging

@@ -22,8 +22,11 @@
                     <td style="width:13%">
                         {% if lesson %}
                             <div class=" px-1">
-                                <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
-                                <hr class="my-1">
+                                {% if perms.records.change_schedule %}
+                                    <a href="{% url 'schedule:edit' lesson.schedule.pk %}?next={{ request.path }}" class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</a>
+                                {% else %}
+                                    <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
+                                {% endif %}
                                 <p class="my-0 small">{{ lesson.schedule.course.group }}</p>
                                 <p class="my-0 small">{{ lesson.schedule.teacher }}</p>
                             </div>

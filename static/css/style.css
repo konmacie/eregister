@@ -26,25 +26,25 @@ body {
   font-size: 1rem;
 }
 
-#header-container .nav-border-red .nav-link {
+/* #header-container .nav-border-red .nav-link {
   border-color: red !important;
-}
+} */
 
 #header-container nav .nav-link i {
   padding-right: 0.5rem;
 }
 
-#header-container nav .active {
+#header-container nav .nav-link.active {
   border-bottom-width: 3px !important;
   border-bottom-style: solid !important;
   background-color: rgb(13, 110, 253, 0.1);
 }
 
-#header-container .nav-border-red .active {
+/* #header-container .nav-border-red .active {
   border-bottom-width: 3px !important;
   border-bottom-style: solid !important;
   background-color: rgb(220, 53, 69, 0.1);
-}
+} */
 
 #header,
 main {

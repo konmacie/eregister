@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from records.models.studentgroup import StudentGroupAssignment
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -11,9 +12,10 @@ from django.views.generic.edit import FormView
 from django.db import transaction
 from django.db.models import When, Case, Value
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 from records.models import StudentGroup, Course
 from records.forms import group as group_forms
-from django.contrib.auth import get_user_model
+from records.views.schedule import GroupTimetableView
 import datetime
 
 User = get_user_model()
@@ -332,3 +334,47 @@ class CourseUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
         return reverse_lazy('group:courses', kwargs={
             'pk': self.object.group.pk
         })
+
+
+class GroupScheduleView(GroupTimetableView):
+    """
+    View selected group's schedule
+    """
+    permission_required = [
+        'records.view_studentgroup', 'records.view_schedule']
+    form_class = group_forms.GroupDateScheduleForm
+    template_name = "records/group/group_timetable.html"
+
+    def set_timetable_kwargs(self):
+        group_pk = self.kwargs.get('pk')
+        self.group = get_object_or_404(StudentGroup, pk=group_pk)
+
+        # get date from kwargs, today() if date not provided
+        date = self.kwargs.get('date', None)
+        if date:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        else:
+            date = datetime.date.today()
+
+        full_week = bool(self.kwargs.get('full_week', True))
+
+        self.timetable_kwargs = {
+            'group': self.group,
+            'date': date,
+            'full_week': full_week
+        }
+
+    def get_context_data(self, **kwargs):
+        kwargs['group'] = self.group
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        kwargs = {
+            'pk': self.kwargs.get('pk'),
+            'date': form.cleaned_data['date'],
+            'full_week': int(form.cleaned_data['full_week'])
+        }
+        return HttpResponseRedirect(reverse_lazy(
+            'group:schedule-specified',
+            kwargs=kwargs
+        ))
