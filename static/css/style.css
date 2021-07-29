@@ -153,6 +153,12 @@ main {
   border-color: #f5c2c7;
 }
 
+.rotated {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  text-transform: uppercase;
+}
+
 @media (max-width: 767.98px) {
   .navbar-brand-small {
     display: inline;

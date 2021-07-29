@@ -16,7 +16,7 @@ from datetime import datetime
 
 class TimetableView(FormView):
     """
-    Abstract view to show timetable. 
+    Abstract view to show timetable.
     """
     timetable_kwargs = None
 
@@ -166,10 +166,8 @@ class EditScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
     success_message = _('Schedule updated successfully')
 
     def form_valid(self, form):
-        """
-        ValidationError can be raised by Schedule's save() if there
-        are realized lessons not in range of new dates.
-        """
+        # ValidationError can be raised by Schedule's save() if there
+        # are realized lessons not in range of new dates.
         try:
             return super().form_valid(form)
         except ValidationError as err:

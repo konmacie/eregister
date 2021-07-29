@@ -152,11 +152,11 @@ class Schedule(models.Model):
     @property
     def is_editable(self):
         """
-        Check for related Lessons with realized status.
+        Check for related Lessons with realized or cancelled status.
         Return False if any exist, True otherwise. Used in Schedule
         update view to limit modifiable fields.
         """
-        qs = self.lessons.filter(status=lesson.Lesson.STATUS_REALIZED)
+        qs = self.lessons.exclude(status=lesson.Lesson.STATUS_PLANNED)
         return False if qs.exists() else True
 
     def __str__(self) -> str:

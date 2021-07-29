@@ -53,3 +53,22 @@ def get_group_timetable(dates, group):
         for lesson in list(lessons):
             timetable[lesson.schedule.period][index] = lesson
     return timetable
+
+
+def get_lessons_table(teacher, date=None):
+    if not date:
+        date = datetime.date.today()
+
+    table = OrderedDict()
+
+    for period in Period.objects.all():
+        table[period] = None
+
+    lessons = Lesson.objects.filter(
+        date=date,
+        schedule__teacher=teacher
+    ).select_related('schedule', 'schedule__course', 'schedule__course__group',
+                     'schedule__period')
+    for lesson in lessons:
+        table[lesson.schedule.period] = lesson
+    return table

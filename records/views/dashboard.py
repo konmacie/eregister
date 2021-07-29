@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from records.utils.schedule import get_lessons_table
 
 
 class DashboardRedirectView(LoginRequiredMixin, RedirectView):
@@ -22,3 +23,8 @@ class TeacherDashboardView(LoginRequiredMixin, UserPassesTestMixin,
 
     def test_func(self):
         return self.request.user.is_teacher
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['table'] = get_lessons_table(self.request.user)
+        return context

@@ -1,10 +1,52 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    Dashboard | eRegister
+{% endblock title %}
 
-{% block header %}
-Dashboard  
-{% endblock header %}
+
+{% block header_nav %}
+<nav class="nav d-flex flex-column flex-md-row">
+    <a id="header-nav-list" class="nav-link active">Dashboard</a>
+</nav>
+{% endblock header_nav %}
 
 {% block content %}
-Welcome!
+<div class="card bg-light mb-3">
+    <div class="card-header">Today's lessons</div>
+    <div class="card-body px-1 px-md-3">
+        <ul class="list-group">
+            {% for period, lesson in table.items %}
+                {% if lesson %}
+                    <a href="{% url 'lesson:update' lesson.pk %}" class="list-group-item list-group-item add-prev">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div>
+                                <span class="fw-bold mb-1">
+                                    {{ lesson.schedule.course }}
+                                </span>
+                                <span class="fw-light">
+                                    | {{ lesson.schedule.course.group }} 
+                                </span>
+                            </div>
+                            <small>{{ period.time_start }} - {{ period.time_end }}</small>
+                        </div>
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <p class="mb-1">{{ lesson.subject }}&nbsp;</p>
+                            {% if lesson.realized %}
+                                <span class="badge bg-success rounded-pill">Realized</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="list-group-item list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="fw-light">Empty</div>
+                            <small class="fw-light">{{ period.time_start }} - {{ period.time_end }}</small>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock content %}

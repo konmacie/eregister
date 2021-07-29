@@ -4,6 +4,7 @@ from .course import Course
 from .period import Period
 from .schedule import Schedule
 from .lesson import Lesson
+from .attendance import Attendance
 
 from django.db.models.signals import pre_save, post_save
 from records.signals.auth import generate_username

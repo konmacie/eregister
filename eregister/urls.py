@@ -20,6 +20,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='dashboard:start')),
     path('dashboard/', include('records.urls.dashboard')),
+    path('lesson/', include('records.urls.lesson')),
     path('student/', include('records.urls.student')),
     path('group/', include('records.urls.group')),
     path('auth/', include('records.urls.auth')),

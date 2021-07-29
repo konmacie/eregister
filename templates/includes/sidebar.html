@@ -13,6 +13,13 @@
                     <i class="bi bi-house-door"></i>Dashboard
                 </a>
             </li>
+            {% if perms.records.view_lesson %}
+            <li class="nav-item">
+                <a href="{% url 'lesson:realized' %}" class="nav-link">
+                    <i class="bi bi-easel"></i>Lessons
+                </a>
+            </li>
+            {% endif %}
             {% if perms.records.view_schedule %}
             <li class="nav-item">
                 <a href="{% url 'schedule:timetable-teacher' %}" class="nav-link">

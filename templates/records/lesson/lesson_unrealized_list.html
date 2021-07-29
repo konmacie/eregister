@@ -1,0 +1,13 @@
+{% extends 'records/lesson/lesson_list.html' %}
+
+{% block title %}
+    Unrealized lessons | eRegister
+{% endblock title %}
+
+{% block header_nav %}
+{% include 'records/lesson/header_nav_list.html' %}
+<script>
+    $("#header-nav-unrealized").addClass("active");
+</script>
+{% endblock header_nav %}
+

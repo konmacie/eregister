@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {{ lesson.schedule.course }} | eRegister
+{% endblock title %}
+
+
+{% block header_nav %}
+<nav class="nav d-flex flex-column flex-md-row nav-border-red">
+    {% if prev %}
+        <a class="nav-link text-danger"  href="{{ prev }}"><i class="bi bi-chevron-left"></i>Back</a>
+    {% endif %}
+</nav>
+{% endblock header_nav %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-4 mb-3">
+        <div class="card bg-light">
+            <div class="card-header">
+                Information
+            </div>
+            <div class="card-body">
+                <p class="fw-light m-0">Group</p>
+                <p class="m-0 mb-3">{{ lesson.schedule.course.group }}</p>
+                <p class="fw-light m-0">Course</p>
+                <p class="m-0 mb-3">{{ lesson.schedule.course }}</p>
+                <p class="fw-light m-0">Date</p>
+                <p class="m-0 mb-3">{{ lesson.date }}</p>
+                <p class="fw-light m-0">Time</p>
+                <p class="m-0 mb-3">{{ lesson.schedule.period }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8 mb-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <form method="post">{% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                        <label for="{{ field.id_for_label }}" class="mt-2 mb-1">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <div class="form-text">
+                            {{ field.help_text }}
+                        </div>
+                        {% for error in field.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endfor %}
+        
+                    <p class="m-0 mt-3 mb-1">Attendance</p>
+                    {{ formset.management_form }}
+                    <ul class="list-group"> 
+                        {% for attendance in formset %}
+                            <li class="list-group-item d-flex flex-column flex-sm-row flex-wrap justify-content-end p-0">
+                                <div class="mx-3 my-2 flex-grow-1">
+                                    {{ forloop.counter}}. {{ attendance.instance.student }}
+                                </div>
+                                <div class="list-group list-group-flush list-group-horizontal align-self-end">
+                                    {{ attendance.non_field_errors }}
+                                    {% for hidden in attendance.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
+                                    {% for radio in attendance.status %}
+                                        <label class="list-group-item border-0 {% cycle 'list-group-item-success' 'list-group-item-warning' 'list-group-item-danger' %}" for="{{ radio.id_for_label }}">{{ radio.tag }} {{ radio.choice_label }}</label>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-flex justify-content-end mt-4">
+                        <div class="list-group list-group-horizontal">
+                            <label class="list-group-item" for="status_realized">
+                                <input class="form-check-input me-1" type="checkbox" value="status_realized" id="status_realized"
+                                    name="status_realized" {% if lesson.is_realized %}checked{% endif %}>
+                                Mark as <i>realized</i>
+                            </label>
+                        </div>
+    
+                        <button type="submit" name="save" value="save" class="btn btn-success">Save</button>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

@@ -116,6 +116,10 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("student:detail", kwargs={"pk": self.pk})
 
+    def get_full_name(self):
+        full_name = '%s %s' % (self.last_name, self.first_name)
+        return full_name.strip()
+
     def __str__(self) -> str:
         """Return full name instead of username"""
         return self.get_full_name()
