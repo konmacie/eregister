@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 from records.models import StudentGroup, Course
 from records.forms import group as group_forms
 from records.views.schedule import GroupTimetableView
+from records.views.mixins import PrevURLMixin
 import datetime
 
 User = get_user_model()
@@ -212,7 +213,7 @@ class AssignManyToGroupView(PermissionRequiredMixin,
 
 
 class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
-                           UpdateView):
+                           PrevURLMixin, UpdateView):
     """
     View to edit group assignment
     """
@@ -228,26 +229,11 @@ class AssignmentUpdateView(PermissionRequiredMixin, SuccessMessageMixin,
         qs = super().get_queryset()
         return qs.select_related('student', 'group')
 
-    def get_next_page_url(self):
-        """
-        Get url to redirect to after successful update.
-        Defaults to 'next' parameter in GET, if present.
-        """
-        if not hasattr(self, 'next'):
-            next = self.request.GET.get('next', "")
-            if next:
-                self.next = next
-            else:
-                self.next = reverse_lazy('student:assignments',
-                                         kwargs={'pk': self.object.student.pk})
-        return self.next
-
-    def get_context_data(self, **kwargs):
-        kwargs['next'] = self.get_next_page_url()
-        return super().get_context_data(**kwargs)
-
     def get_success_url(self):
-        return self.get_next_page_url()
+        if self.prev_url:
+            return self.prev_url
+        return reverse_lazy('student:assignments',
+                            kwargs={'pk': self.object.student.pk})
 
 
 class GroupCoursesView(PermissionRequiredMixin, ListView):

@@ -23,7 +23,7 @@
                         {% if lesson %}
                             <div class="px-1">
                                 {% if perms.records.change_schedule %}
-                                    <a href="{% url 'schedule:edit' lesson.schedule.pk %}?next={{ request.path }}" class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</a>
+                                    <a href="{% url 'schedule:edit' lesson.schedule.pk %}?prev={{ request.path }}" class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</a>
                                 {% else %}
                                     <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
                                 {% endif %}

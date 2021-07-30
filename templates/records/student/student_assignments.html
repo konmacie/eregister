@@ -40,7 +40,7 @@
                     <p class="m-0">{{ current_assignment.date_end }}</p>
                 </div>
                 <div class="container-fluid text-end">
-                    <a href="{% url 'group:assign-update' current_assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary">Edit</a>
+                    <a href="{% url 'group:assign-update' current_assignment.pk %}?prev={{ request.path }}" class="btn btn-outline-primary">Edit</a>
                 </div>
             </div>
         {% else %}
@@ -82,7 +82,7 @@
                 
                     <td>
                     {% if perms.records.change_studentgroupassignment %}
-                        <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
+                        <a href="{% url 'group:assign-update' assignment.pk %}?prev={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
                     {% endif %}
                     </td>
                 </tr>

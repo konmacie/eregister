@@ -24,7 +24,7 @@
             </li>
         {% endif %}
         {% if perms.records.add_schedule %}
-            <a href="{% url 'schedule:add' group.pk %}?next={{ request.path }}" class="dropdown-item">Add schedule</a>
+            <a href="{% url 'schedule:add' group.pk %}?prev={{ request.path }}" class="dropdown-item">Add schedule</a>
         {% endif %}
     </ul>
     {% endif %}

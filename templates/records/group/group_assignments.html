@@ -47,7 +47,7 @@
                 </td>
                 <td>
                     {% if perms.records.change_studentgroupassignment %}
-                        <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
+                        <a href="{% url 'group:assign-update' assignment.pk %}?prev={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
                     {% endif %}
                 </td>
             </tr>
@@ -101,7 +101,7 @@
                         {% endif %}
                         <td>
                         {% if perms.records.change_studentgroupassignment %}
-                            <a href="{% url 'group:assign-update' assignment.pk %}?next={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
+                            <a href="{% url 'group:assign-update' assignment.pk %}?prev={{ request.path }}" class="btn btn-outline-primary py-0 my-0">Edit</a>
                         {% endif %}
                         </td>
                     </tr>

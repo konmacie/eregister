@@ -1,4 +1,3 @@
-
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -14,6 +13,7 @@ from records.models import Schedule, User, StudentGroup
 from records.forms import schedule as schedule_forms
 from records.utils.dates import get_week_dates, get_weekday_names
 from records.utils.schedule import get_group_timetable, get_teacher_timetable
+from records.views.mixins import PrevURLMixin
 from datetime import datetime
 
 
@@ -156,7 +156,7 @@ class MyScheduleRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class AddScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
-                      CreateView):
+                      PrevURLMixin, CreateView):
     """ View to add new schedule entry """
     permission_required = ['records.add_schedule']
     form_class = schedule_forms.ScheduleAddForm
@@ -177,7 +177,6 @@ class AddScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
 
     def get_context_data(self, **kwargs):
         kwargs['group'] = self.group
-        kwargs['next'] = self.request.GET.get('next', None)
         return super().get_context_data(**kwargs)
 
     def get_form_kwargs(self):
@@ -186,12 +185,11 @@ class AddScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
         return kwargs
 
     def get_success_url(self):
-        next = self.request.GET.get('next', None)
-        return next or super().get_success_url()
+        return self.prev_url or super().get_success_url()
 
 
 class EditScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
-                       UpdateView):
+                       PrevURLMixin, UpdateView):
     permission_required = ['records.change_schedule']
     model = Schedule
     form_class = schedule_forms.ScheduleRestrictedEditForm
@@ -208,10 +206,5 @@ class EditScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
             form.add_error(None, err)
             return self.form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-        kwargs['next'] = self.request.GET.get('next', None)
-        return super().get_context_data(**kwargs)
-
     def get_success_url(self):
-        next = self.request.GET.get('next', None)
-        return next or super().get_success_url()
+        return self.prev_url or super().get_success_url()

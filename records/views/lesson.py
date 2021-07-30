@@ -6,11 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from records.models import Lesson, Attendance
 from records.forms import attendance as attendance_forms
+from records.views.mixins import PrevURLMixin
 import datetime
 
 
 class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
-                       UpdateView):
+                       PrevURLMixin, UpdateView):
     permission_required = ['records.change_lesson']
     model = Lesson
     template_name = 'records/lesson/lesson_update.html'
@@ -88,9 +89,6 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
         ))
 
     def get_context_data(self, **kwargs):
-        prev = self.request.GET.get('prev', None)
-        if prev:
-            kwargs['prev'] = prev
         if 'formset' not in kwargs:
             kwargs['formset'] = self.get_formset()
         return super().get_context_data(**kwargs)

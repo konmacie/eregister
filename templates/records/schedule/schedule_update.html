@@ -8,8 +8,8 @@
 
 {% block header_nav %}
 <nav class="nav d-flex flex-column flex-md-row">
-    {% if next %}
-        <a id="header-nav-list" class="nav-link text-danger" href="{{ next }}"><i class="bi bi-chevron-left"></i>Back</a>
+    {% if prev %}
+        <a id="header-nav-list" class="nav-link text-danger" href="{{ prev }}"><i class="bi bi-chevron-left"></i>Back</a>
     {% endif %}
 </nav>
 {% endblock header_nav %}
