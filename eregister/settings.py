@@ -157,3 +157,35 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+
+# default permissions groups
+DEFAULT_GROUPS = {
+    'Students': [
+        'view_schedule'
+    ],
+    'Teachers': [
+        'view_student',
+        'view_studentgroup',
+        'view_studentgroupassignment',
+        'view_schedule',
+        'view_course',
+        'view_lesson',
+        'view_attendance',
+        'view_period',
+        'change_lesson',
+    ],
+    'Educators': [
+        'add_student',
+        'change_student',
+        'reset_student_password',
+        'add_studentgroup',
+        'change_studentgroup',
+        'add_studentgroupassignment',
+        'change_studentgroupassignment',
+        'add_schedule',
+        'change_schedule',
+        'add_course',
+        'change_course',
+    ]
+}
