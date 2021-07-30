@@ -3,6 +3,9 @@ from records.views import schedule as schedule_views
 
 app_name = 'schedule'
 urlpatterns = [
+    path('',
+         schedule_views.MyScheduleRedirectView.as_view(),
+         name='timetable-my'),
     path('teacher/',
          schedule_views.TeacherTimetableView.as_view(),
          name='timetable-teacher'),

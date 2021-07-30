@@ -1,9 +1,12 @@
 
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http.response import HttpResponseRedirect
-from django.views.generic import CreateView, UpdateView, FormView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import CreateView, UpdateView, FormView, RedirectView
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin, LoginRequiredMixin
+)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -119,6 +122,37 @@ class GroupTimetableView(PermissionRequiredMixin, TimetableView):
             'schedule:timetable-group-specified',
             kwargs=kwargs
         ))
+
+
+class MyScheduleRedirectView(LoginRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_teacher:
+            kwargs = {
+                'teacher': self.request.user.pk,
+                'date': datetime.today().date(),
+                'full_week': 1
+            }
+            return reverse_lazy(
+                'schedule:timetable-teacher-specified',
+                kwargs=kwargs
+            )
+        else:
+            group = self.request.user.student_group
+            if not group:
+                messages.warning(
+                    self.request,
+                    _("You're currently not assigned to any group.")
+                )
+                return reverse_lazy('schedule:timetable-group')
+            kwargs = {
+                'group': group,
+                'date': datetime.today().date(),
+                'full_week': 1
+            }
+            reverse_lazy(
+                'schedule:timetable-group-specified',
+                kwargs=kwargs
+            )
 
 
 class AddScheduleView(PermissionRequiredMixin, SuccessMessageMixin,
