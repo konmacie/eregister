@@ -78,7 +78,7 @@ class Lesson(models.Model):
         delete all related attendances
         """
 
-        # delete attendances for canxelled lesson and exit
+        # delete attendances for cancelled lesson and exit
         if self.is_canceled:
             self.attendances.all().delete()
             return

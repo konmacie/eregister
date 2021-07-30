@@ -32,8 +32,10 @@
                         </div>
                         <div class="d-flex w-100 justify-content-between align-items-start">
                             <p class="mb-1">{{ lesson.subject }}&nbsp;</p>
-                            {% if lesson.realized %}
+                            {% if lesson.is_realized %}
                                 <span class="badge bg-success rounded-pill">Realized</span>
+                            {% elif lesson.is_cancelled %}
+                                <span class="badge bg-danger rounded-pill">Realized</span>
                             {% endif %}
                         </div>
                     </a>

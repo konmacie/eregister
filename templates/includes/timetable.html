@@ -28,7 +28,7 @@
                                     <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
                                 {% endif %}
                                 {% if lesson.is_canceled %}
-                                    <p class="my-0 small text-danger">CANCELLED</p>
+                                    <span class="my-0 badge rounded-pill bg-danger">Cancelled</span>
                                 {% endif %}
                                 <p class="my-0 small">{{ lesson.schedule.course.group }}</p>
                                 <p class="my-0 small">{{ lesson.schedule.teacher }}</p>

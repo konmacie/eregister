@@ -10,16 +10,17 @@ import datetime
 
 
 class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
-                       SuccessMessageMixin, UpdateView):
+                       UpdateView):
     permission_required = ['records.change_lesson']
     model = Lesson
     template_name = 'records/lesson/lesson_update.html'
     context_object_name = 'lesson'
-    success_message = _("Lesson updated successfully")
+    success_message = _("Lesson saved successfully")
     prefix = 'lesson'
     fields = ['subject']
 
     def test_func(self):
+        """ Test if User is selected lesson's teacher """
         self.object = self.get_object()
         return self.object.schedule.teacher == self.request.user
 
@@ -30,6 +31,7 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
         return self.object
 
     def get_queryset(self):
+        """ Limit editable lessons to ones with past/today date """
         qs = super().get_queryset()\
             .filter(date__lte=datetime.date.today())\
             .select_related('schedule', 'schedule__teacher',
@@ -38,6 +40,7 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
         return qs
 
     def get_formset(self):
+        """ Returns formset to check students' attendance """
         kwargs = {
             'prefix': 'attendances',
             'queryset': Attendance.objects.filter(lesson=self.object)
@@ -50,6 +53,7 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
         return attendance_forms.AttendanceFormSet(**kwargs)
 
     def post(self, request, *args, **kwargs):
+        """ Validate Lesson form and Attendances formset"""
         self.object = self.get_object()
         form = self.get_form()
         formset = self.get_formset()
@@ -59,6 +63,7 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
             return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
+        """ Save Lesson instance and related Attendances """
         self.object = form.save(commit=False)
         if 'status_realized' in self.request.POST:
             self.object.status = Lesson.STATUS_REALIZED
@@ -66,9 +71,11 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
             self.object.status = Lesson.STATUS_PLANNED
         self.object.save()
         formset.save()
-        success_message = self.get_success_message(form.cleaned_data)
-        if success_message:
-            messages.success(self.request, success_message)
+
+        # add success message to request
+        messages.success(self.request, self.success_message)
+
+        # render view again with updated forms
         return self.render_to_response(self.get_context_data(
             form=form,
             formset=formset
@@ -90,6 +97,10 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
 
 
 class AllLessonsListView(PermissionRequiredMixin, ListView):
+    """
+    List view with prefetched teacher, course, group etc. and filtered
+    for current user.
+    """
     permission_required = ['records.view_lesson']
     model = Lesson
     paginate_by = 20
