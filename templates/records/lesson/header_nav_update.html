@@ -1,0 +1,54 @@
+<nav class="nav d-flex flex-column flex-md-row">
+    <a id="header-nav-update" class="nav-link"  href="{{ lesson.get_absolute_url }}{% if prev %}?prev={{ prev }}{% endif %}">Subject / Attendance</a>
+    <a class="nav-link"  href="">Marks</a>
+</nav>
+<nav class="nav d-flex flex-column flex-md-row nav-border-red">
+    {% if prev %}
+        <a class="nav-link text-danger"  href="{{ prev }}"><i class="bi bi-chevron-left"></i>Back</a>
+    {% endif %}
+    {% if lesson.is_cancelled %}
+        <a class="nav-link text-success" href="#" data-bs-toggle="modal" data-bs-target="#restoreModal">Restore lesson</a>
+    {% else %}
+        <a class="nav-link text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel lesson</a>
+    {% endif %}
+</nav>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cancel lesson</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure? <span class="text-danger">Lesson's subject and attendance will be cleared.</span>
+            </div>
+            <div class="modal-footer">
+                <form method="post">{% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="cancel_lesson" value="cancel_lesson" class="btn btn-danger">Cancel lesson</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Restore lesson</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <form method="post">{% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button  type="submit" name="restore_lesson" value="restore_lesson" class="btn btn-success">Restore lesson</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

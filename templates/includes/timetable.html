@@ -19,7 +19,7 @@
                     <p class="my-0 small text-end">{{ period.time_end }}</p>
                 </td>
                 {% for lesson in lessons %}
-                    <td style="width:13%" {% if lesson.is_canceled %}class="table-danger"{% endif %}>
+                    <td style="width:13%" {% if lesson.is_cancelled %}class="table-danger"{% endif %}>
                         {% if lesson %}
                             <div class="px-1">
                                 {% if perms.records.change_schedule %}
@@ -27,7 +27,7 @@
                                 {% else %}
                                     <p class="my-1 fw-bold text-success">{{ lesson.schedule.course }}</p>
                                 {% endif %}
-                                {% if lesson.is_canceled %}
+                                {% if lesson.is_cancelled %}
                                     <span class="my-0 badge rounded-pill bg-danger">Cancelled</span>
                                 {% endif %}
                                 <p class="my-0 small">{{ lesson.schedule.course.group }}</p>

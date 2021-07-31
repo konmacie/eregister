@@ -8,4 +8,6 @@ $(document).ready(function () {
     href += "?prev=" + prev;
     $(this).attr("href", href);
   });
+
+  $(".fade-4s").delay(4000).fadeOut(500);
 });

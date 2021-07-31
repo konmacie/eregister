@@ -155,7 +155,7 @@ LOGGING = {
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-dark',
     messages.INFO: 'alert-primary',
-    messages.SUCCESS: 'alert-success',
+    messages.SUCCESS: 'alert-success fade-4s',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }

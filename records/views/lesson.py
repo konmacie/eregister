@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin, UserPassesTestMixin)
@@ -46,16 +47,54 @@ class LessonUpdateView(PermissionRequiredMixin, UserPassesTestMixin,
             'prefix': 'attendances',
             'queryset': Attendance.objects.filter(lesson=self.object)
         }
-        if self.request.method in ('POST', 'PUT'):
+        if self.request.method in ('POST', 'PUT') and \
+                'restore_lesson' not in self.request.POST:
             kwargs.update({
                 'data': self.request.POST,
                 'files': self.request.FILES,
             })
         return attendance_forms.AttendanceFormSet(**kwargs)
 
+    def cancel_lesson(self):
+        self.object.status = Lesson.STATUS_CANCELLED
+        self.object.subject = ""
+        self.object.save()
+        self.object.sync_attendances()
+        messages.success(
+            self.request, _('Lesson cancelled successfuly.')
+        )
+        if self.prev_url:
+            return HttpResponseRedirect(self.prev_url)
+        return self.handle_cancelled()
+
+    def restore_lesson(self):
+        self.object.status = Lesson.STATUS_PLANNED
+        self.object.save()
+        self.object.sync_attendances()
+        messages.success(
+            self.request, _('Lesson restored successfuly.')
+        )
+        return self.render_to_response(self.get_context_data())
+
+    def handle_cancelled(self):
+        return self.render_to_response(self.get_context_data())
+
     def post(self, request, *args, **kwargs):
         """ Validate Lesson form and Attendances formset"""
         self.object = self.get_object()
+
+        # check if user cancelled or restored lesson
+        if 'restore_lesson' in request.POST and self.object.is_cancelled:
+            return self.restore_lesson()
+        elif 'cancel_lesson' in request.POST and not self.object.is_cancelled:
+            return self.cancel_lesson()
+
+        # if lesson is cancelled and yet user sent POST data,
+        # skip validating it and don't save object
+        if self.object.is_cancelled:
+            return self.handle_cancelled()
+
+        # validate forms and save lesson
         form = self.get_form()
         formset = self.get_formset()
         if form.is_valid() and formset.is_valid():
@@ -138,5 +177,5 @@ class CancelledLessonsListView(AllLessonsListView):
 
     def get_queryset(self):
         qs = super().get_queryset()\
-            .filter(status=Lesson.STATUS_CANCELED)
+            .filter(status=Lesson.STATUS_CANCELLED)
         return qs

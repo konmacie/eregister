@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 from records.models import attendance
 import datetime
 
@@ -7,11 +8,11 @@ import datetime
 class Lesson(models.Model):
     STATUS_PLANNED = 0
     STATUS_REALIZED = 1
-    STATUS_CANCELED = 2
+    STATUS_CANCELLED = 2
     STATUS_CHOICES = [
-        (STATUS_PLANNED, _('Planned')),
+        (STATUS_PLANNED, _('Unrealized')),
         (STATUS_REALIZED, _('Realized')),
-        (STATUS_CANCELED, _('Canceled')),
+        (STATUS_CANCELLED, _('Cancelled')),
     ]
 
     status = models.IntegerField(
@@ -54,8 +55,8 @@ class Lesson(models.Model):
         return self.status == self.STATUS_REALIZED
 
     @property
-    def is_canceled(self):
-        return self.status == self.STATUS_CANCELED
+    def is_cancelled(self):
+        return self.status == self.STATUS_CANCELLED
 
     @property
     def is_editable(self):
@@ -79,7 +80,7 @@ class Lesson(models.Model):
         """
 
         # delete attendances for cancelled lesson and exit
-        if self.is_canceled:
+        if self.is_cancelled:
             self.attendances.all().delete()
             return
 
@@ -98,6 +99,9 @@ class Lesson(models.Model):
         # create missing Attendances
         for student in missing_attendances:
             attendance.Attendance(lesson=self, student=student).save()
+
+    def get_absolute_url(self):
+        return reverse("lesson:update", kwargs={"pk": self.pk})
 
     def __str__(self):
         return str(self.date)
