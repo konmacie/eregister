@@ -72,6 +72,14 @@ class LessonAdmin(admin.ModelAdmin):
         return obj.schedule.teacher
 
 
+class SymbolAdmin(admin.ModelAdmin):
+    list_display = ('name', 'value')
+
+
+class MarkAdmin(admin.ModelAdmin):
+    list_display = ('symbol', 'student', 'course', 'date_created')
+
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(StudentGroup, StudentGroupAdmin)
 admin.site.register(StudentGroupAssignment, StudentGroupAssignmentAdmin)
@@ -80,3 +88,6 @@ admin.site.register(Period)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Attendance)
+admin.site.register(Category)
+admin.site.register(Symbol, SymbolAdmin)
+admin.site.register(Mark, MarkAdmin)

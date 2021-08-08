@@ -174,8 +174,13 @@ DEFAULT_GROUPS = {
         'view_course',
         'view_lesson',
         'view_attendance',
+        'change_attendance',
         'view_period',
         'change_lesson',
+        'add_mark',
+        'view_mark',
+        'change_mark',
+        'view_changehistory'
     ],
     'Educators': [
         'add_student',

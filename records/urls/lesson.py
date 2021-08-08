@@ -15,5 +15,8 @@ urlpatterns = [
     path('<pk>/',
          lesson_views.LessonUpdateView.as_view(),
          name='update'),
+    path('<pk>/marks/',
+         lesson_views.LessonMarksView.as_view(),
+         name='marks'),
 
 ]

@@ -25,5 +25,6 @@ urlpatterns = [
     path('group/', include('records.urls.group')),
     path('auth/', include('records.urls.auth')),
     path('schedule/', include('records.urls.schedule')),
+    path('ajax/', include('records.urls.ajax')),
     path('admin/', admin.site.urls),
 ]

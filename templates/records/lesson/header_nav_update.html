@@ -1,6 +1,6 @@
 <nav class="nav d-flex flex-column flex-md-row">
-    <a id="header-nav-update" class="nav-link"  href="{{ lesson.get_absolute_url }}{% if prev %}?prev={{ prev }}{% endif %}">Subject / Attendance</a>
-    <a class="nav-link"  href="">Marks</a>
+    <a id="header-nav-update" class="nav-link" href="{{ lesson.get_absolute_url }}{% if prev %}?prev={{ prev }}{% endif %}">Subject / Attendance</a>
+    <a class="nav-link {% if lesson.is_cancelled %}disabled{% endif %}" href="{% url 'lesson:marks' lesson.pk %}{% if prev %}?prev={{ prev }}{% endif %}">Marks</a>
 </nav>
 <nav class="nav d-flex flex-column flex-md-row nav-border-red">
     {% if prev %}
@@ -24,7 +24,7 @@
                 Are you sure? <span class="text-danger">Lesson's subject and attendance will be cleared.</span>
             </div>
             <div class="modal-footer">
-                <form method="post">{% csrf_token %}
+                <form method="post" action="{{ lesson.get_absolute_url }}{% if prev %}?prev={{ prev }}{% endif %}">{% csrf_token %}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" name="cancel_lesson" value="cancel_lesson" class="btn btn-danger">Cancel lesson</button>
                 </form>
@@ -44,7 +44,7 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <form method="post">{% csrf_token %}
+                <form method="post" action="{{ lesson.get_absolute_url }}{% if prev %}?prev={{ prev }}{% endif %}">{% csrf_token %}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button  type="submit" name="restore_lesson" value="restore_lesson" class="btn btn-success">Restore lesson</button>
                 </form>

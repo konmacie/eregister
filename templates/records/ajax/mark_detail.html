@@ -1,0 +1,83 @@
+{% load widget_tweaks %}
+<div id="response">
+    <div id="response-mark-details">
+        <div class="row">
+            <div class="col-6">
+                <p class="fw-light m-0">Symbol</p>
+                <p class="m-0 mb-2">{{ mark.symbol }}</p>
+            </div>
+            <div class="col-6">
+                <p class="fw-light m-0">Value</p>
+                <p class="m-0 mb-2">{{ mark.symbol.value }}</p>
+            </div>
+        </div>
+        <p class="fw-light m-0">Category</p>
+        <p class="m-0 mb-2">{{ mark.category }}</p>
+        <p class="fw-light m-0">Student</p>
+        <p class="m-0 mb-3">{{ mark.student }}</p>
+        <hr>
+        <p class="text-end mb-1">
+            <span class="fw-light">Added</span>
+            {{ mark.date_created }}
+            <span class="fw-light">by</span>
+            {{ mark.teacher }}
+        </p>
+        <p class="text-end">
+            <span class="fw-light">Last modified</span>
+            {{ mark.date_modified }}
+        </p>
+    </div>
+    <div class="table-responsive" id="response-mark-history">
+        {% if perms.records.view_changehistory %}
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>User</th>
+                        <th>Old</th>
+                        <th>New</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for change in mark.changehistory_set.all %}
+                        <tr>
+                            <td>{{ change.timestamp }}</td>
+                            <td>{{ change.get_type_display }}</td>
+                            <td>{{ change.user }}</td>
+                            <td>{{ change.value_old | default:"" }}</td>
+                            <td>{{ change.value_new }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div id="response-mark-change">
+        {% if perms.records.change_mark %}
+            <form method="post" action="{% url 'ajax:mark-update' mark.pk %}">{% csrf_token %}
+                <p class="fw-light m-0">Student</p>
+                <p class="m-0 mb-3">{{ mark.student }}</p>
+                {{ form.non_field_errors }}
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}" class="mt-2">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                <div class="form-text">
+                    {{ field.help_text }}
+                </div>
+                {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+                {% endfor %}
+        
+                <div class="container-fluid text-end px-0 mt-3">
+                    <button id="change-mark-button" type="submit" name="save" value="save" class="btn btn-success">Save</button>
+                    <a class="btn btn-primary" data-bs-target="#markModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cancel</a>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
