@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import When, Case, Value
 from django.shortcuts import get_object_or_404
 from records.forms.student import StudentCreateForm, AssignToGroupForm
-from records.models import StudentGroupAssignment
+from records.models import StudentGroupAssignment, Mark
 import datetime
 
 User = get_user_model()
@@ -191,3 +191,24 @@ class AssignToGroupView(PermissionRequiredMixin, SuccessMessageMixin,
         return reverse_lazy('student:assignments', kwargs={
             'pk': self.student.pk
         })
+
+
+class StudentMarksView(PermissionRequiredMixin, DetailView):
+    permission_required = ['records.view_student']
+    model = User
+    template_name = 'records/student/student_marks.html'
+    context_object_name = 'student'
+    queryset = User.objects.filter(is_teacher=False)
+
+    def get_marks(self):
+        qs = Mark.objects\
+            .filter(student=self.object)\
+            .order_by('course__group', 'course__name', 'date_created')\
+            .select_related('symbol', 'course')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['marks'] = self.get_marks()
+        context['current_group'] = self.object.student_group
+        return context

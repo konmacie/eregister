@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
-{% load static %}
 
 {% block title %}
     {{ lesson.schedule.course }} | eRegister
@@ -25,31 +23,32 @@
 <div class="card bg-light">
     <div class="card-header">Marks</div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <tbody>
-                    {% for student, data in students.items %}
-                        <tr class="student-row">
-                            <td class="text-nowrap">
-                                {{ forloop.counter }}. {{ student }}
-                                {% if data.absent %} <span class="badge bg-danger ms-1">Absent</span> {% endif %}
-                            </td>
-                            <td class="w-100 py-0">
-                                {% for mark in data.marks %}
-                                    <a id="mark-{{ mark.pk }}" href="{% url 'ajax:mark-details' %}" class="mark-link btn btn-primary btn-sm py-1 my-1">{{ mark }}</a>
-                                {% endfor %}
-                                {% if perms.recors.add_mark %}
-                                    <a id="student-{{ student.pk }}" href="#" class="mark-add-link btn btn-outline-primary btn-sm py-1 my-1"><i class="bi bi-plus-lg"></i></a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <ol class="list-group list-group-numbered">
+            {% for student, data in students.items %}
+            <li class="list-group-item student-row d-flex flex-nowrap">
+                <div class="ms-2 me-auto">
+                    <p class="my-0">
+                        <strong class="text-nowrap">{{ student }}</strong>
+                        {% if data.absent %} <span class="badge bg-danger ms-1">Absent</span> {% endif %}
+                    </p>
+                    <p class="my-1">
+                        {% for mark in data.marks %}
+                            <a id="mark-{{ mark.pk }}" href="{% url 'ajax:mark-details' %}" class="mark-link btn btn-light btn-sm py-1 my-1 me-1 position-relative">{{ mark }}</a>
+                        {% endfor %}
+                        {% if perms.records.add_mark %}
+                            <a id="student-{{ student.pk }}" href="#" class="mark-add-link btn btn-outline-primary btn-sm py-1 my-1"><i class="bi bi-plus-lg"></i></a>
+                        {% endif %}
+                    </p>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
     </div>
 </div>
 
-{% include 'includes/mark_modals.html' %}
+
+{% include 'includes/mark_templates.html' %}
+{% include 'includes/mark_modals_create.html' %}
+{% include 'includes/mark_modals_details.html' %}
 
 {% endblock content %}

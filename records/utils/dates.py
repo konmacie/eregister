@@ -6,7 +6,7 @@ from records.models import Schedule
 def get_dates_between(start_date, end_date, delta_days=7):
     # returns list of dates between two provided dates
     dates = []
-    while start_date < end_date:
+    while start_date <= end_date:
         dates.append(start_date)
         start_date += datetime.timedelta(days=delta_days)
     return dates

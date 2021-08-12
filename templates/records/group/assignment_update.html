@@ -7,6 +7,11 @@
 
 
 {% block header_nav %}
+<nav class="nav d-flex flex-column flex-md-row nav-border-red">
+    {% if prev %}
+        <a class="nav-link text-danger"  href="{{ prev }}"><i class="bi bi-chevron-left"></i>Back</a>
+    {% endif %}
+</nav>
 {% endblock header_nav %}
 
 

@@ -21,4 +21,7 @@ urlpatterns = [
     path('<pk>/assign/',
          student_views.AssignToGroupView.as_view(),
          name='assign'),
+    path('<pk>/marks/',
+         student_views.StudentMarksView.as_view(),
+         name='marks'),
 ]

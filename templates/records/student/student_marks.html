@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ student }} | eRegister
+{% endblock title %}
+
+{% block header %}
+    {{ student }}
+{% endblock header %}
+
+{% block header_nav %}
+    {% include 'records/student/header_nav_student.html' %}
+    <script>
+        $("#header-nav-marks").addClass("active");
+    </script>
+{% endblock header_nav %}
+
+
+{% block content %}
+{% regroup marks by course.group as group_list %}
+{% for group, group_marks in group_list %}
+    <div class="card bg-light mb-3">
+        <div class="card-header">
+            {% if group == current_group %} 
+                <span class="badge bg-success me-2">Current</span> 
+            {% endif %}
+            Group: <strong>{{ group }} </strong>
+        </div>
+        <div class="card-body">
+            {% regroup group_marks by course as course_list %}
+            <ul class="list-group">
+                {% for course, course_marks in course_list %}
+                    <li class="list-group-item">
+                        <p class="my-0">
+                            <strong class="text-nowrap">{{ course }}</strong>
+                        </p>
+                        <p class="my-1">
+                            {% for mark in course_marks %}
+                                <a id="mark-{{ mark.pk }}" href="{% url 'ajax:mark-details' %}" class="mark-link btn btn-light btn-sm py-1 my-1 me-1 position-relative">{{ mark }}</a>
+                            {% endfor %}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endfor %}
+{% if not marks %}
+<div class="alert alert-warning">No marks found.</div>
+{% endif %}
+
+{% include 'includes/mark_templates.html' %}
+{% include 'includes/mark_modals_details.html' %}
+
+{% endblock content %}
